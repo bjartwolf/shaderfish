@@ -1,7 +1,7 @@
-import * as THREE from 'three';
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const fragmentShaderCode = 
-`
+const fragmentShaderCode = `
 uniform float time;
 varying vec3 normalVec;
 
@@ -11,43 +11,45 @@ float normalize2(float min, float max, float value) {
 
 void main() {
   vec3 color = 0.5 * normalVec + 0.5;
-  float alpha = normalize2(-1.0, 1.0, sin(0.1 * time));
+  //float alpha = normalize2(-1.0, 1.0, sin(0.1 * time));
 
-  gl_FragColor = vec4(color, alpha);
+  gl_FragColor = vec4(color, 1.0);
 }
-`
+`;
 const vertexShaderCode = `
 varying vec3 normalVec;
+uniform float time;
 
 void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates.y = modelSpaceCoordinates.y * cos(time); 
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
   gl_Position = screenSpaceCoordinate;
 }
-`
+`;
 
-let scene, camera, renderer, cubes, t0;
+let scene, camera, renderer, controls, t0;
 
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
+t0 = Date.now();
+const WIDTH = 500;
+const HEIGHT = 500;
 
 const UNIFORMS = {
-  time: { value: 0.0 }
+  time: { value: 0.0 },
 };
 
 function init() {
   scene = new THREE.Scene();
-  t0 = Date.now() * 0.01;
 
-  initCubes();
-  initCamera();
   initRenderer();
-
   document.body.appendChild(renderer.domElement);
+
+  initShapes();
+  initCamera();
 
   renderer.render(scene, camera);
 }
@@ -55,6 +57,9 @@ function init() {
 function initCamera() {
   camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 1000);
   camera.position.z = 40;
+  camera.lookAt(0, 0, 0);
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.update();
 }
 
 function initRenderer() {
@@ -62,26 +67,35 @@ function initRenderer() {
   renderer.setSize(WIDTH, HEIGHT);
 }
 
-function initCubes() {
+function initShapes() {
+  const curve = new THREE.CubicBezierCurve(
+    new THREE.Vector2(-10, 0),
+    new THREE.Vector2(-5, 15),
+    new THREE.Vector2(20, 15),
+    new THREE.Vector2(10, 0)
+  );
 
-    let geometry = new THREE.BoxGeometry(1, 1, 1);
-    let material = new THREE.ShaderMaterial({
-      vertexShader: vertexShaderCode,
-      fragmentShader: fragmentShaderCode,
-      transparent: true,
-      uniforms: UNIFORMS
-    });
+  const points = curve.getPoints(50);
 
-    let cube = new THREE.Mesh(geometry, material);
+  let material = new THREE.ShaderMaterial({
+    vertexShader: vertexShaderCode,
+    fragmentShader: fragmentShaderCode,
+    transparent: true,
+    uniforms: UNIFORMS,
+  });
 
-    cube.position.set(0, 0, 0);
-
-    scene.add(cube);
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+  const line = new THREE.Line(lineGeometry, material);
+  scene.add(line);
 }
 
 function render() {
   requestAnimationFrame(render);
+  controls.update();
   renderer.render(scene, camera);
+  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
+  console.log(UNIFORMS.time.value);
+  console.log(Math.sin(UNIFORMS.time.value));
 }
 
 init();
