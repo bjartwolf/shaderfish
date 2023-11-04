@@ -11,6 +11,7 @@ function createBezier(vectors) {
 export function createFish(material) {
   let fishyBeziers = [
     createBezier([
+      new THREE.Vector2(0.0, 0.0),
       new THREE.Vector2(0.11, 0.11),
       new THREE.Vector2(0.175, 0.175),
       new THREE.Vector2(0.25, 0.25),
@@ -76,6 +77,7 @@ export function createFish(material) {
       new THREE.Vector2(-0.25, 0.25),
     ]),
     createBezier([
+      new THREE.Vector2(-0.25, 0.25),
       new THREE.Vector2(-0.15, 0.15),
       new THREE.Vector2(-0.05, 0.05),
       new THREE.Vector2(0.0, 0.0),
