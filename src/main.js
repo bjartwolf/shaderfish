@@ -4,11 +4,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const fragmentShaderCode = `
 uniform float time;
-varying vec3 normalVec;
-
-float normalize2(float min, float max, float value) {
-  return (value - min) / (max - min);
-}
 
 void main() {
   float color = 0.5 + 0.5 *abs(sin(3.0*time));
