@@ -94,8 +94,6 @@ function render() {
   controls.update();
   renderer.render(scene, camera);
   UNIFORMS.time.value = (Date.now() - t0) * 0.001;
-  console.log(UNIFORMS.time.value);
-  console.log(Math.sin(UNIFORMS.time.value));
 }
 
 init();
