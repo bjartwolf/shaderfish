@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as fish from "/shapes/fish.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const fragmentShaderCode = `
@@ -55,8 +56,8 @@ function init() {
 }
 
 function initCamera() {
-  camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 1000);
-  camera.position.z = 40;
+  camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
+  camera.position.z = 4;
   camera.lookAt(0, 0, 0);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
@@ -68,15 +69,6 @@ function initRenderer() {
 }
 
 function initShapes() {
-  const curve = new THREE.CubicBezierCurve(
-    new THREE.Vector2(-10, 0),
-    new THREE.Vector2(-5, 15),
-    new THREE.Vector2(20, 15),
-    new THREE.Vector2(10, 0)
-  );
-
-  const points = curve.getPoints(50);
-
   let material = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode,
@@ -84,9 +76,13 @@ function initShapes() {
     uniforms: UNIFORMS,
   });
 
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-  const line = new THREE.Line(lineGeometry, material);
-  scene.add(line);
+  const basicMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+
+  const fishyBeziers = fish.createFish(basicMaterial);
+  
+  console.log(fishyBeziers);
+
+  scene.add(fishyBeziers);
 }
 
 function render() {
