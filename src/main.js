@@ -11,10 +11,8 @@ float normalize2(float min, float max, float value) {
 }
 
 void main() {
-  vec3 color = 0.5 * normalVec + 0.5;
-  //float alpha = normalize2(-1.0, 1.0, sin(0.1 * time));
-
-  gl_FragColor = vec4(color, 1.0);
+  float color = 0.5 + 0.5 *abs(sin(3.0*time));
+  gl_FragColor = vec4(color,0.5,0.0, 1.0);
 }
 `;
 const vertexShaderCode = `
@@ -76,9 +74,7 @@ function initShapes() {
     uniforms: UNIFORMS,
   });
 
-  const basicMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-
-  const fishyBeziers = fish.createFish(basicMaterial);
+  const fishyBeziers = fish.createFish(material);
   
   console.log(fishyBeziers);
 
