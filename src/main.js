@@ -18,7 +18,7 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.xy = modelSpaceCoordinates.xy * abs(cos(time)); 
+  modelSpaceCoordinates.xy = modelSpaceCoordinates.xy * cos(time); 
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
@@ -50,7 +50,7 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.position.z = 4;
+  camera.position.z = 5;
   camera.lookAt(0, 0, 0);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
@@ -70,10 +70,17 @@ function initShapes() {
   });
 
   const fishyBeziers = fish.createFish(material);
+  const fishyBeziers2 = fishyBeziers.clone();
+  fishyBeziers2.rotation.z = Math.PI/2.0 
+  let group1 = new THREE.Group();
+  group1.add(fishyBeziers)
+  group1.add(fishyBeziers2)
   
-  console.log(fishyBeziers);
+  let group2 = group1.clone()
+  group2.rotateZ(Math.PI)
 
-  scene.add(fishyBeziers);
+  scene.add(group1);
+  scene.add(group2);
 }
 
 function render() {
