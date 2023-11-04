@@ -1,6 +1,13 @@
 # shaderfish
 Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 
+# Run
+## Install deps
+```npm install```
+
+## Run 
+```npm run dev```
+
 # Resources
 
 On three.js:

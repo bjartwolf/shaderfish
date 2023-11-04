@@ -2,8 +2,9 @@
   "name": "shaderfish",
   "version": "1.0.0",
   "description": "Fish tesselation with vertex shaders in three.js",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
+    "dev": "vite serve src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/bjartwolf/shaderfish/issues"
   },
-  "homepage": "https://github.com/bjartwolf/shaderfish#readme"
+  "homepage": "https://github.com/bjartwolf/shaderfish#readme",
+  "dependencies": {
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "vite": "^4.5.0"
+  }
 }
