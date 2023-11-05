@@ -13,15 +13,16 @@ function createBezier(vectors) {
   return lineGeometry;
 }
 
+// disabled for now
 const fragmentShaderCode1 = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+  gl_FragColor = vec4(1.0,0.0,0.0,0.0);
 } `;
 const fragmentShaderCode2 = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(0.0,1.0,0.0, 1.0);
+  gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 } `;
 const fragmentShaderCode3 = `
 uniform float time;
@@ -31,7 +32,7 @@ void main() {
 const fragmentShaderCode4 = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(1.0,1.0,0.0, 1.0);
+  gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 } `;
 const vertexShaderCode1 = `
 varying vec3 normalVec;
@@ -40,8 +41,8 @@ uniform float time;
 void main() {
   normalVec = normal;
 
-  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
@@ -49,6 +50,7 @@ void main() {
 }
 `;
 
+  
 const vertexShaderCode2 = `
 varying vec3 normalVec;
 uniform float time;
@@ -57,7 +59,7 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.x = modelSpaceCoordinates.x*(1.0+0.4*sin(time));
+  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
@@ -79,6 +81,7 @@ void main() {
   gl_Position = screenSpaceCoordinate;
 }
 `;
+
 const vertexShaderCode4 = `
 varying vec3 normalVec;
 uniform float time;
