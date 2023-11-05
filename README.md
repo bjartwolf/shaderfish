@@ -31,3 +31,5 @@ http://www.tess-elation.co.uk/self-similar-tessellations
 Book of shaders:
 https://thebookofshaders.com/
 
+Book on designing tesselations:
+https://www.amazon.com/Designing-Tessellations-Secrets-Interlocking-Patterns/dp/0809228661
