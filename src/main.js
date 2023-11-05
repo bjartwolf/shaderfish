@@ -2,29 +2,6 @@ import * as THREE from "three";
 import * as fish from "/shapes/fish.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const fragmentShaderCode = `
-uniform float time;
-
-void main() {
-  float color = 0.5 + 0.5 *abs(sin(3.0*time));
-  gl_FragColor = vec4(color,0.5,0.0, 1.0);
-}
-`;
-const vertexShaderCode = `
-varying vec3 normalVec;
-uniform float time;
-
-void main() {
-  normalVec = normal;
-
-  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
-  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
-
-  gl_Position = screenSpaceCoordinate;
-}
-`;
-
 let scene, camera, renderer, controls, t0;
 
 t0 = Date.now();
@@ -61,22 +38,15 @@ function initRenderer() {
 }
 
 function initShapes() {
-  let material = new THREE.ShaderMaterial({
-    vertexShader: vertexShaderCode,
-    fragmentShader: fragmentShaderCode,
-    transparent: true,
-    uniforms: UNIFORMS,
-  });
-
-  const fishyBeziers = fish.createFish(material);
+  const fishyBeziers = fish.createFish(UNIFORMS);
   const fishyBeziers2 = fishyBeziers.clone();
-  fishyBeziers2.rotation.z = Math.PI/2.0 
+  fishyBeziers2.rotation.z = Math.PI / 2.0;
   let group1 = new THREE.Group();
-  group1.add(fishyBeziers)
-  group1.add(fishyBeziers2)
-  
-  let group2 = group1.clone()
-  group2.rotateZ(Math.PI)
+  group1.add(fishyBeziers);
+  group1.add(fishyBeziers2);
+
+  let group2 = group1.clone();
+  group2.rotateZ(Math.PI);
 
   scene.add(group1);
   scene.add(group2);

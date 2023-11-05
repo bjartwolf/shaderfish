@@ -2,13 +2,111 @@ export const name = "fish";
 import * as THREE from "three";
 
 function createBezier(vectors) {
-  const curve = new THREE.CubicBezierCurve3(vectors[0], vectors[1], vectors[2], vectors[3]);
+  const curve = new THREE.CubicBezierCurve3(
+    vectors[0],
+    vectors[1],
+    vectors[2],
+    vectors[3]
+  );
   const points = curve.getPoints(50);
   const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
   return lineGeometry;
 }
 
-export function createFish(material1, material2, material3, material4) {
+const fragmentShaderCode = `
+uniform float time;
+
+void main() {
+  float color = 0.5 + 0.5 *abs(sin(3.0*time));
+  gl_FragColor = vec4(color,0.5,0.0, 1.0);
+}
+`;
+const vertexShaderCode1 = `
+varying vec3 normalVec;
+uniform float time;
+
+void main() {
+  normalVec = normal;
+
+  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
+  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
+
+  gl_Position = screenSpaceCoordinate;
+}
+`;
+
+const vertexShaderCode2 = `
+varying vec3 normalVec;
+uniform float time;
+
+void main() {
+  normalVec = normal;
+
+  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
+  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
+  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
+
+  gl_Position = screenSpaceCoordinate;
+}
+`;
+const vertexShaderCode3 = `
+varying vec3 normalVec;
+uniform float time;
+
+void main() {
+  normalVec = normal;
+
+  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
+  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
+  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
+
+  gl_Position = screenSpaceCoordinate;
+}
+`;
+const vertexShaderCode4 = `
+varying vec3 normalVec;
+uniform float time;
+
+void main() {
+  normalVec = normal;
+
+  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
+  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
+  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
+
+  gl_Position = screenSpaceCoordinate;
+}
+`;
+export function createFish(UNIFORMS) {
+  let material1 = new THREE.ShaderMaterial({
+    vertexShader: vertexShaderCode1,
+    fragmentShader: fragmentShaderCode,
+    transparent: true,
+    uniforms: UNIFORMS,
+  });
+  let material2 = new THREE.ShaderMaterial({
+    vertexShader: vertexShaderCode2,
+    fragmentShader: fragmentShaderCode,
+    transparent: true,
+    uniforms: UNIFORMS,
+  });
+  let material3 = new THREE.ShaderMaterial({
+    vertexShader: vertexShaderCode3,
+    fragmentShader: fragmentShaderCode,
+    transparent: true,
+    uniforms: UNIFORMS,
+  });
+  let material4 = new THREE.ShaderMaterial({
+    vertexShader: vertexShaderCode4,
+    fragmentShader: fragmentShaderCode,
+    transparent: true,
+    uniforms: UNIFORMS,
+  });
+
   let fishyBeziers1 = [
     createBezier([
       new THREE.Vector2(0.0, 0.0),
@@ -27,7 +125,8 @@ export function createFish(material1, material2, material3, material4) {
       new THREE.Vector2(0.73, 0.056),
       new THREE.Vector2(0.834, 0.042),
       new THREE.Vector2(1.0, 0.0),
-    ])];
+    ]),
+  ];
   let fishyBeziers2 = [
     createBezier([
       new THREE.Vector2(1.0, 0.0),
@@ -46,7 +145,8 @@ export function createFish(material1, material2, material3, material4) {
       new THREE.Vector2(0.5, 0.41),
       new THREE.Vector2(0.5, 0.46),
       new THREE.Vector2(0.5, 0.5),
-    ])];
+    ]),
+  ];
   let fishyBeziers3 = [
     createBezier([
       new THREE.Vector2(0.5, 0.5),
@@ -65,7 +165,8 @@ export function createFish(material1, material2, material3, material4) {
       new THREE.Vector2(0.163, 0.893),
       new THREE.Vector2(0.104, 0.938),
       new THREE.Vector2(0.0, 1.0),
-    ])];
+    ]),
+  ];
   let fishyBeziers4 = [
     createBezier([
       new THREE.Vector2(0.0, 1.0),
@@ -84,7 +185,8 @@ export function createFish(material1, material2, material3, material4) {
       new THREE.Vector2(-0.15, 0.15),
       new THREE.Vector2(-0.05, 0.05),
       new THREE.Vector2(0.0, 0.0),
-    ])];
+    ]),
+  ];
   let group = new THREE.Group();
   fishyBeziers1.forEach((fishGeometry) => {
     const line = new THREE.Line(fishGeometry, material1);
