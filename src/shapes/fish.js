@@ -42,7 +42,6 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
