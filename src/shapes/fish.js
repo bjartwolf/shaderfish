@@ -8,8 +8,8 @@ function createBezier(vectors) {
   return lineGeometry;
 }
 
-export function createFish(material) {
-  let fishyBeziers = [
+export function createFish(material1, material2, material3, material4) {
+  let fishyBeziers1 = [
     createBezier([
       new THREE.Vector2(0.0, 0.0),
       new THREE.Vector2(0.11, 0.11),
@@ -27,7 +27,8 @@ export function createFish(material) {
       new THREE.Vector2(0.73, 0.056),
       new THREE.Vector2(0.834, 0.042),
       new THREE.Vector2(1.0, 0.0),
-    ]),
+    ])];
+  let fishyBeziers2 = [
     createBezier([
       new THREE.Vector2(1.0, 0.0),
       new THREE.Vector2(0.896, 0.062),
@@ -45,7 +46,8 @@ export function createFish(material) {
       new THREE.Vector2(0.5, 0.41),
       new THREE.Vector2(0.5, 0.46),
       new THREE.Vector2(0.5, 0.5),
-    ]),
+    ])];
+  let fishyBeziers3 = [
     createBezier([
       new THREE.Vector2(0.5, 0.5),
       new THREE.Vector2(0.5, 0.575),
@@ -63,7 +65,8 @@ export function createFish(material) {
       new THREE.Vector2(0.163, 0.893),
       new THREE.Vector2(0.104, 0.938),
       new THREE.Vector2(0.0, 1.0),
-    ]),
+    ])];
+  let fishyBeziers4 = [
     createBezier([
       new THREE.Vector2(0.0, 1.0),
       new THREE.Vector2(-0.042, 0.834),
@@ -81,11 +84,22 @@ export function createFish(material) {
       new THREE.Vector2(-0.15, 0.15),
       new THREE.Vector2(-0.05, 0.05),
       new THREE.Vector2(0.0, 0.0),
-    ]),
-  ];
+    ])];
   let group = new THREE.Group();
-  fishyBeziers.forEach((fishGeometry) => {
-    const line = new THREE.Line(fishGeometry, material);
+  fishyBeziers1.forEach((fishGeometry) => {
+    const line = new THREE.Line(fishGeometry, material1);
+    group.add(line);
+  });
+  fishyBeziers2.forEach((fishGeometry) => {
+    const line = new THREE.Line(fishGeometry, material2);
+    group.add(line);
+  });
+  fishyBeziers3.forEach((fishGeometry) => {
+    const line = new THREE.Line(fishGeometry, material3);
+    group.add(line);
+  });
+  fishyBeziers4.forEach((fishGeometry) => {
+    const line = new THREE.Line(fishGeometry, material4);
     group.add(line);
   });
   return group;
