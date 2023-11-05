@@ -13,14 +13,30 @@ function createBezier(vectors) {
   return lineGeometry;
 }
 
-const fragmentShaderCode = `
+const fragmentShaderCode1 = `
 uniform float time;
-
 void main() {
   float color = 0.5 + 0.5 *abs(sin(3.0*time));
-  gl_FragColor = vec4(color,0.5,0.0, 1.0);
-}
-`;
+  gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+} `;
+const fragmentShaderCode2 = `
+uniform float time;
+void main() {
+  float color = 0.5 + 0.5 *abs(sin(3.0*time));
+  gl_FragColor = vec4(0.0,1.0,0.0, 1.0);
+} `;
+const fragmentShaderCode3 = `
+uniform float time;
+void main() {
+  float color = 0.5 + 0.5 *abs(sin(3.0*time));
+  gl_FragColor = vec4(0.0,0.0,1.0, 1.0);
+} `;
+const fragmentShaderCode4 = `
+uniform float time;
+void main() {
+  float color = 0.5 + 0.5 *abs(sin(3.0*time));
+  gl_FragColor = vec4(1.0,1.0,0.0, 1.0);
+} `;
 const vertexShaderCode1 = `
 varying vec3 normalVec;
 uniform float time;
@@ -28,6 +44,7 @@ uniform float time;
 void main() {
   normalVec = normal;
 
+  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
@@ -84,25 +101,25 @@ void main() {
 export function createFish(UNIFORMS) {
   let material1 = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode1,
-    fragmentShader: fragmentShaderCode,
+    fragmentShader: fragmentShaderCode1,
     transparent: true,
     uniforms: UNIFORMS,
   });
   let material2 = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode2,
-    fragmentShader: fragmentShaderCode,
+    fragmentShader: fragmentShaderCode2,
     transparent: true,
     uniforms: UNIFORMS,
   });
   let material3 = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode3,
-    fragmentShader: fragmentShaderCode,
+    fragmentShader: fragmentShaderCode3,
     transparent: true,
     uniforms: UNIFORMS,
   });
   let material4 = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode4,
-    fragmentShader: fragmentShaderCode,
+    fragmentShader: fragmentShaderCode4,
     transparent: true,
     uniforms: UNIFORMS,
   });
