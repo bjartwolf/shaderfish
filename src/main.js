@@ -39,17 +39,17 @@ function initRenderer() {
 
 function initShapes() {
   const fishyBeziers = fish.createFish(UNIFORMS);
-  const fishyBeziers2 = fishyBeziers.clone();
-  fishyBeziers2.rotation.z = Math.PI / 2.0;
+//  const fishyBeziers2 = fishyBeziers.clone();
+ // fishyBeziers2.rotation.z = Math.PI / 2.0;
   let group1 = new THREE.Group();
   group1.add(fishyBeziers);
-  group1.add(fishyBeziers2);
+  //group1.add(fishyBeziers2);
 
-  let group2 = group1.clone();
-  group2.rotateZ(Math.PI);
+//  let group2 = group1.clone();
+//  group2.rotateZ(Math.PI);
 
   scene.add(group1);
-  scene.add(group2);
+ // scene.add(group2);
 }
 
 function render() {

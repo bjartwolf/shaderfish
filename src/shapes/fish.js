@@ -26,7 +26,7 @@ void main() {
 const fragmentShaderCode3 = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(0.0,0.0,1.0, 1.0);
+  gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 } `;
 const fragmentShaderCode4 = `
 uniform float time;
@@ -57,7 +57,7 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
+  modelSpaceCoordinates.x = modelSpaceCoordinates.x*(1.0+0.4*sin(time));
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
@@ -72,7 +72,7 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
+  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
@@ -87,7 +87,7 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.y = modelSpaceCoordinates.y*(1.0+0.4*sin(time));
+  modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
