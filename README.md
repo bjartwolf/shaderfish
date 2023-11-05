@@ -25,6 +25,9 @@ https://github.com/einarwh/escher-workshop
 On fish with pixel shaders:
 http://roy.red/posts/building-eschers-square-limit/
 
+On tesselations:
+http://www.tess-elation.co.uk/self-similar-tessellations
 
 Book of shaders:
 https://thebookofshaders.com/
+
