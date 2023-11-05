@@ -16,25 +16,21 @@ function createBezier(vectors) {
 const fragmentShaderCode1 = `
 uniform float time;
 void main() {
-  float color = 0.5 + 0.5 *abs(sin(3.0*time));
   gl_FragColor = vec4(1.0,0.0,0.0,1.0);
 } `;
 const fragmentShaderCode2 = `
 uniform float time;
 void main() {
-  float color = 0.5 + 0.5 *abs(sin(3.0*time));
   gl_FragColor = vec4(0.0,1.0,0.0, 1.0);
 } `;
 const fragmentShaderCode3 = `
 uniform float time;
 void main() {
-  float color = 0.5 + 0.5 *abs(sin(3.0*time));
   gl_FragColor = vec4(0.0,0.0,1.0, 1.0);
 } `;
 const fragmentShaderCode4 = `
 uniform float time;
 void main() {
-  float color = 0.5 + 0.5 *abs(sin(3.0*time));
   gl_FragColor = vec4(1.0,1.0,0.0, 1.0);
 } `;
 const vertexShaderCode1 = `
