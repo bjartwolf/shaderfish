@@ -44,22 +44,6 @@ void main() {
   gl_Position = screenSpaceCoordinate;
 }
 `;
-const vertexShaderCode2 = `
-varying vec3 normalVec;
-uniform float time;
-
-void main() {
-  normalVec = normal;
-
-  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
-  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
-  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
-
-  gl_Position = screenSpaceCoordinate;
-}
-`;
-
 const vertexShaderCode3 = `
 varying vec3 normalVec;
 uniform float time;
@@ -79,12 +63,6 @@ export function createFish(UNIFORMS) {
   let material1 = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode1,
     fragmentShader: fragmentShaderCode1,
-    transparent: true,
-    uniforms: UNIFORMS,
-  });
-  let material2 = new THREE.ShaderMaterial({
-    vertexShader: vertexShaderCode2,
-    fragmentShader: fragmentShaderCode2,
     transparent: true,
     uniforms: UNIFORMS,
   });
@@ -161,7 +139,7 @@ export function createFish(UNIFORMS) {
     group.add(line);
   });
   fishyBeziers2.forEach((fishGeometry) => {
-    const line = new THREE.Line(fishGeometry, material2);
+    const line = new THREE.Line(fishGeometry, material1);
     group.add(line);
   });
   fishyBeziers3.forEach((fishGeometry) => {
