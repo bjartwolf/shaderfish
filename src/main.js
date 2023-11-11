@@ -39,33 +39,9 @@ function initRenderer() {
 
 function initShapes() {
   const fishyBeziers = fish.createFish(UNIFORMS);
-  const fishyBeziers2 = fishyBeziers.clone();
-  fishyBeziers2.rotation.z = Math.PI / 2.0;
-  let group1 = new THREE.Group();
-  group1.add(fishyBeziers);
-  group1.add(fishyBeziers2);
-
-  let group2 = group1.clone();
-  group2.rotateZ(Math.PI);
-
-  let group3 = new THREE.Group();
-  group3.add(group1);
-  group3.add(group2);
-
   
-  let group4 = group3.clone();
-  group4.rotateZ(Math.PI);
-  group4.translateX(2.0);
-  let group5 = new THREE.Group();
-  group5.add(group3);
-  group5.add(group4) 
-
-  let group6 = group5.clone();
-  group6.translateX(1.0)
-  group6.translateY(1.0)
-  scene.add(group5);
-  scene.add(group6);
-
+  scene.add(fishyBeziers);
+//  const instancedFishMesh = new THREE.InstancedMesh(fishyBeziers)
 }
 
 function render() {

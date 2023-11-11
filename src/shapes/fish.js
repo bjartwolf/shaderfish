@@ -13,11 +13,10 @@ function createBezier(vectors) {
   return lineGeometry;
 }
 
-// disabled for now
 const fragmentShaderCode1 = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(1.0,0.0,0.0,0.0);
+  gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 } `;
 const fragmentShaderCode2 = `
 uniform float time;
@@ -29,11 +28,7 @@ uniform float time;
 void main() {
   gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 } `;
-const fragmentShaderCode4 = `
-uniform float time;
-void main() {
-  gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
-} `;
+  
 const vertexShaderCode1 = `
 varying vec3 normalVec;
 uniform float time;
@@ -42,14 +37,13 @@ void main() {
   normalVec = normal;
 
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
   gl_Position = screenSpaceCoordinate;
 }
 `;
-
-  
 const vertexShaderCode2 = `
 varying vec3 normalVec;
 uniform float time;
@@ -65,23 +59,8 @@ void main() {
   gl_Position = screenSpaceCoordinate;
 }
 `;
+
 const vertexShaderCode3 = `
-varying vec3 normalVec;
-uniform float time;
-
-void main() {
-  normalVec = normal;
-
-  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
-  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
-  vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
-
-  gl_Position = screenSpaceCoordinate;
-}
-`;
-
-const vertexShaderCode4 = `
 varying vec3 normalVec;
 uniform float time;
 
@@ -115,34 +94,8 @@ export function createFish(UNIFORMS) {
     transparent: true,
     uniforms: UNIFORMS,
   });
-  let material4 = new THREE.ShaderMaterial({
-    vertexShader: vertexShaderCode4,
-    fragmentShader: fragmentShaderCode4,
-    transparent: true,
-    uniforms: UNIFORMS,
-  });
 
   let fishyBeziers1 = [
-    createBezier([
-      new THREE.Vector2(0.0, 0.0),
-      new THREE.Vector2(0.11, 0.11),
-      new THREE.Vector2(0.175, 0.175),
-      new THREE.Vector2(0.25, 0.25),
-    ]),
-    createBezier([
-      new THREE.Vector2(0.25, 0.25),
-      new THREE.Vector2(0.372, 0.194),
-      new THREE.Vector2(0.452, 0.132),
-      new THREE.Vector2(0.564, 0.032),
-    ]),
-    createBezier([
-      new THREE.Vector2(0.564, 0.032),
-      new THREE.Vector2(0.73, 0.056),
-      new THREE.Vector2(0.834, 0.042),
-      new THREE.Vector2(1.0, 0.0),
-    ]),
-  ];
-  let fishyBeziers2 = [
     createBezier([
       new THREE.Vector2(1.0, 0.0),
       new THREE.Vector2(0.896, 0.062),
@@ -162,7 +115,7 @@ export function createFish(UNIFORMS) {
       new THREE.Vector2(0.5, 0.5),
     ]),
   ];
-  let fishyBeziers3 = [
+  let fishyBeziers2 = [
     createBezier([
       new THREE.Vector2(0.5, 0.5),
       new THREE.Vector2(0.5, 0.575),
@@ -182,7 +135,7 @@ export function createFish(UNIFORMS) {
       new THREE.Vector2(0.0, 1.0),
     ]),
   ];
-  let fishyBeziers4 = [
+  let fishyBeziers3 = [
     createBezier([
       new THREE.Vector2(0.0, 1.0),
       new THREE.Vector2(-0.042, 0.834),
@@ -213,10 +166,6 @@ export function createFish(UNIFORMS) {
   });
   fishyBeziers3.forEach((fishGeometry) => {
     const line = new THREE.Line(fishGeometry, material3);
-    group.add(line);
-  });
-  fishyBeziers4.forEach((fishGeometry) => {
-    const line = new THREE.Line(fishGeometry, material4);
     group.add(line);
   });
   return group;
