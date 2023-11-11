@@ -18,11 +18,6 @@ uniform float time;
 void main() {
   gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 } `;
-const fragmentShaderCode2 = `
-uniform float time;
-void main() {
-  gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
-} `;
 const fragmentShaderCode3 = `
 uniform float time;
 void main() {
