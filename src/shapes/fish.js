@@ -52,10 +52,10 @@ const vertexShaderCode = `
 varying vec3 normalVec;
 uniform float time;
 attribute float side;
-
 void main() {
   normalVec = normal;
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  modelSpaceCoordinates =modelSpaceCoordinates*instanceMatrix;
   if (side < 1.5) {
     modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
   } else {
@@ -160,7 +160,7 @@ export function createFish(UNIFORMS) {
     ),
   ];
   let fishGeometry= BufferGeometryUtils.mergeGeometries(fishyBeziers);
-  let fish = new THREE.InstancedMesh(fishGeometry, new THREE.MeshBasicMaterial(), 2);
-//  let fish = new THREE.InstancedMesh(fishGeometry, material, 2);
+//  let fish = new THREE.InstancedMesh(fishGeometry, new THREE.MeshBasicMaterial(), 2);
+  let fish = new THREE.InstancedMesh(fishGeometry, material, 100);
   return fish;
 }

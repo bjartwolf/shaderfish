@@ -43,9 +43,7 @@ function initShapes() {
   const fishes = fish.createFish(UNIFORMS);
 
   const matrix1 = (new THREE.Matrix4()).makeTranslation(0.3,0.4,0.0);
-  const matrix2 = (new THREE.Matrix4()).makeRotationAxis(new THREE.Vector3(1.0,1.0,1.0), 5);
   fishes.setMatrixAt(0,matrix1);
-  fishes.setMatrixAt(1,matrix2);
   fishes.instanceMatrix.needsUpdate = true;
 
   const axesHelper = new THREE.AxesHelper( 5 );
@@ -63,7 +61,7 @@ function render() {
   controls.update();
   renderer.render(scene, camera);
   UNIFORMS.time.value = 1.0; 
-//  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
+  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
 }
 
 init();
