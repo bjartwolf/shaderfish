@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 function createBezier(vectors, side) {
   const curve = new THREE.CubicBezierCurve3(
     vectors[0],
@@ -9,26 +9,30 @@ function createBezier(vectors, side) {
   );
   let n = 15;
   const points = curve.getPoints(n);
-  
-  const planeGeometries = [];
-  const planeHeight = 0.01; // Height of the vertical plane
-  const planeWidth = 0.01; // Thickness of the plane (small value)
-  points.forEach(point => {
-      const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-      planeGeometry.translate(point.x, point.y, point.z); 
-      planeGeometries.push(planeGeometry);
+
+  var shape = new THREE.Shape();
+  shape.moveTo(points[0].x, points[0].y);
+
+  points.forEach(function (point) {
+    shape.lineTo(point.x, point.y);
   });
 
-  // Merge the plane geometries
-  const mergedGeometry = BufferGeometryUtils.mergeGeometries(planeGeometries);
+  var extrudeSettings = {
+    steps: 1,
+    depth: 0.2, // Depth of the extrusion
+    bevelEnabled: false, // This can be true if you want beveled edges
+  };
 
-  let sideArray = new Float32Array((n+1)*3*4);
+  var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+//  let sideArray = new Float32Array((n + 1) * 3 * 4);
+  let sideArray = new Float32Array(180*3);
   for (let i = 0; i < sideArray.length; i++) {
-      sideArray[i] = side;
+    sideArray[i] = side;
   }
-  let bufferAttribute = new THREE.BufferAttribute(sideArray,3, false);
-  mergedGeometry.setAttribute("side",bufferAttribute);
-  return mergedGeometry;
+  let bufferAttribute = new THREE.BufferAttribute(sideArray, 3, false);
+  geometry.setAttribute("side", bufferAttribute);
+  return geometry;
 }
 
 const fragmentShaderCode = `
@@ -37,7 +41,7 @@ void main() {
   gl_FragColor = vec4(1.0,0.0,0.0, 0.5);
 } `;
 
-/// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper 
+/// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper
 /// perspective required for perfect composition, but for now I guess it is ok.
 /// It could possibly work to just have the one line animated and use composition of those
 /// using matrixes and compose them to one fish. That would lead to some issues later with pixelshaders
@@ -70,60 +74,87 @@ export function createFish(UNIFORMS) {
   });
 
   let fishyBeziers = [
-    createBezier([
-      new THREE.Vector3(1.0, 0.0,0.0),
-      new THREE.Vector3(0.896, 0.062,0.0),
-      new THREE.Vector3(0.837, 0.107,0.0),
-      new THREE.Vector3(0.766, 0.202,0.0),
-    ], 1),
-    createBezier([
-      new THREE.Vector3(0.766, 0.202,0.0),
-      new THREE.Vector3(0.66, 0.208,0),   
-      new THREE.Vector3(0.589, 0.217,0),
-      new THREE.Vector3(0.5, 0.25,0),
-    ], 1),
-    createBezier([
-      new THREE.Vector3(0.5, 0.25,0),
-      new THREE.Vector3(0.5, 0.41,0),
-      new THREE.Vector3(0.5, 0.46,0),
-      new THREE.Vector3(0.5, 0.5,0),
-    ], 1),
-    createBezier([
-      new THREE.Vector3(0.5, 0.5,0),
-      new THREE.Vector3(0.5, 0.575,0),
-      new THREE.Vector3(0.5, 0.625,0),
-      new THREE.Vector3(0.5, 0.75,0),
-    ], 1),
-    createBezier([
-      new THREE.Vector3(0.5, 0.75,0),
-      new THREE.Vector3(0.411, 0.783,0),
-      new THREE.Vector3(0.34, 0.792,0),
-      new THREE.Vector3(0.234, 0.798,0),
-    ], 1),
-    createBezier([
-      new THREE.Vector3(0.234, 0.798,0),
-      new THREE.Vector3(0.163, 0.893,0),
-      new THREE.Vector3(0.104, 0.938,0),
-      new THREE.Vector3(0.0, 1.0,0),
-    ], 1),
-    createBezier([
-      new THREE.Vector3(0.0, 1.0,0),
-      new THREE.Vector3(-0.042, 0.834,0),
-      new THREE.Vector3(-0.056, 0.73,0),
-      new THREE.Vector3(-0.032, 0.564,0),
-    ], 2),
-    createBezier([
-      new THREE.Vector3(-0.032, 0.564,0),
-      new THREE.Vector3(-0.132, 0.452,0),
-      new THREE.Vector3(-0.194, 0.372,0),
-      new THREE.Vector3(-0.25, 0.25,0),
-    ], 2),
-    createBezier([
-      new THREE.Vector3(-0.25, 0.25,0),
-      new THREE.Vector3(-0.15, 0.15,0),
-      new THREE.Vector3(-0.05, 0.05,0),
-      new THREE.Vector3(0.0, 0.0,0),
-    ], 2),
+    createBezier(
+      [
+        new THREE.Vector3(1.0, 0.0, 0.0),
+        new THREE.Vector3(0.896, 0.062, 0.0),
+        new THREE.Vector3(0.837, 0.107, 0.0),
+        new THREE.Vector3(0.766, 0.202, 0.0),
+      ],
+      1
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(0.766, 0.202, 0.0),
+        new THREE.Vector3(0.66, 0.208, 0),
+        new THREE.Vector3(0.589, 0.217, 0),
+        new THREE.Vector3(0.5, 0.25, 0),
+      ],
+      1
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(0.5, 0.25, 0),
+        new THREE.Vector3(0.5, 0.41, 0),
+        new THREE.Vector3(0.5, 0.46, 0),
+        new THREE.Vector3(0.5, 0.5, 0),
+      ],
+      1
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(0.5, 0.5, 0),
+        new THREE.Vector3(0.5, 0.575, 0),
+        new THREE.Vector3(0.5, 0.625, 0),
+        new THREE.Vector3(0.5, 0.75, 0),
+      ],
+      1
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(0.5, 0.75, 0),
+        new THREE.Vector3(0.411, 0.783, 0),
+        new THREE.Vector3(0.34, 0.792, 0),
+        new THREE.Vector3(0.234, 0.798, 0),
+      ],
+      1
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(0.234, 0.798, 0),
+        new THREE.Vector3(0.163, 0.893, 0),
+        new THREE.Vector3(0.104, 0.938, 0),
+        new THREE.Vector3(0.0, 1.0, 0),
+      ],
+      1
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(0.0, 1.0, 0),
+        new THREE.Vector3(-0.042, 0.834, 0),
+        new THREE.Vector3(-0.056, 0.73, 0),
+        new THREE.Vector3(-0.032, 0.564, 0),
+      ],
+      2
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(-0.032, 0.564, 0),
+        new THREE.Vector3(-0.132, 0.452, 0),
+        new THREE.Vector3(-0.194, 0.372, 0),
+        new THREE.Vector3(-0.25, 0.25, 0),
+      ],
+      2
+    ),
+    createBezier(
+      [
+        new THREE.Vector3(-0.25, 0.25, 0),
+        new THREE.Vector3(-0.15, 0.15, 0),
+        new THREE.Vector3(-0.05, 0.05, 0),
+        new THREE.Vector3(0.0, 0.0, 0),
+      ],
+      2
+    ),
   ];
   let group = new THREE.Group();
   fishyBeziers.forEach((fishGeometry) => {

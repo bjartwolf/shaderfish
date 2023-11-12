@@ -27,8 +27,8 @@ function init() {
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
   camera.position.z = 3;
-  camera.position.y = 3;
-  camera.position.x = 3;
+  camera.position.y = 2;
+  camera.position.x = 2;
   camera.lookAt(0, 0, 0);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
@@ -53,7 +53,7 @@ function render() {
   controls.update();
   renderer.render(scene, camera);
   UNIFORMS.time.value = 1.0; 
-  //UNIFORMS.time.value = (Date.now() - t0) * 0.001;
+  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
 }
 
 init();
