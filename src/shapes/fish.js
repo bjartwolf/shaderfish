@@ -13,20 +13,22 @@ function createBezier(vectors, side) {
   var shape = new THREE.Shape();
   shape.moveTo(points[0].x, points[0].y);
 
-  points.forEach(function (point) {
+  for (var i = 0; i < points.length; i++) {
+    let point = points[i];
     shape.lineTo(point.x, point.y);
-  });
+  }
 
   var extrudeSettings = {
     steps: 1,
+    curveSegments: n,
     depth: 0.2, // Depth of the extrusion
     bevelEnabled: false, // This can be true if you want beveled edges
   };
 
-  var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+  var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings);
+  let positionLength = geometry.attributes["position"]["array"].length;
 
-//  let sideArray = new Float32Array((n + 1) * 3 * 4);
-  let sideArray = new Float32Array(180*3);
+  let sideArray = new Float32Array(positionLength);
   for (let i = 0; i < sideArray.length; i++) {
     sideArray[i] = side;
   }
@@ -68,7 +70,7 @@ export function createFish(UNIFORMS) {
   let material = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode,
-    wireframe: true,
+//    wireframe: true,
     transparent: true,
     uniforms: UNIFORMS,
   });
