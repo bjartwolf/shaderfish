@@ -26,8 +26,8 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.position.z = 1.5;
-  camera.position.y = 1.5;
+  camera.position.z = 3;
+  camera.position.y = 1;
   camera.position.x = 1;
   camera.lookAt(0, 0, 0);
   controls = new OrbitControls(camera, renderer.domElement);

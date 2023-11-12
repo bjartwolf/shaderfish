@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
+
 function createBezier(vectors, side) {
   const curve = new THREE.CubicBezierCurve3(
     vectors[0],
@@ -25,7 +26,7 @@ function createBezier(vectors, side) {
     bevelEnabled: false, // This can be true if you want beveled edges
   };
 
-  var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings);
+  var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
   let positionLength = geometry.attributes["position"]["array"].length;
 
   let sideArray = new Float32Array(positionLength);
@@ -158,10 +159,7 @@ export function createFish(UNIFORMS) {
       2
     ),
   ];
-  let group = new THREE.Group();
-  fishyBeziers.forEach((fishGeometry) => {
-    const line = new THREE.Line(fishGeometry, material);
-    group.add(line);
-  });
-  return group;
+  let fishGeometry= BufferGeometryUtils.mergeGeometries(fishyBeziers);
+  let fish = new THREE.Mesh(fishGeometry, material);
+  return fish;
 }
