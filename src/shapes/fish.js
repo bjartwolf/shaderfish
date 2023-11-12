@@ -160,6 +160,6 @@ export function createFish(UNIFORMS) {
     ),
   ];
   let fishGeometry= BufferGeometryUtils.mergeGeometries(fishyBeziers);
-  let fish = new THREE.InstancedMesh(fishGeometry, material, 100);
+  let fish = new THREE.InstancedMesh(fishGeometry, material, 10000);
   return fish;
 }
