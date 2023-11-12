@@ -20,7 +20,7 @@ function createBezier(vectors, side) {
   }
 
   var extrudeSettings = {
-    steps: 10,
+    steps: 2,
     curveSegments: n,
     depth: 0.3, // Depth of the extrusion
     bevelEnabled: false, // This can be true if you want beveled edges
@@ -160,6 +160,6 @@ export function createFish(UNIFORMS) {
     ),
   ];
   let fishGeometry= BufferGeometryUtils.mergeGeometries(fishyBeziers);
-  let fish = new THREE.Mesh(fishGeometry, material);
+  let fish = new THREE.InstancedMesh(fishGeometry, material, 4000);
   return fish;
 }
