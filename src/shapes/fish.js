@@ -41,7 +41,7 @@ function createBezier(vectors, side) {
 const fragmentShaderCode = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(1.0,0.0,0.0, 0.5);
+  gl_FragColor = vec4(1.0,0.0,0.0, 0.7);
 } `;
 
 /// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper
@@ -55,13 +55,13 @@ attribute float side;
 void main() {
   normalVec = normal;
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  modelSpaceCoordinates =modelSpaceCoordinates*instanceMatrix;
   if (side < 1.5) {
     modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
   } else {
     modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
   }
-  vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
+  modelSpaceCoordinates = modelSpaceCoordinates;
+  vec4 worldSpaceCoordinates = modelViewMatrix* instanceMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
   gl_Position = screenSpaceCoordinate;
@@ -160,7 +160,6 @@ export function createFish(UNIFORMS) {
     ),
   ];
   let fishGeometry= BufferGeometryUtils.mergeGeometries(fishyBeziers);
-//  let fish = new THREE.InstancedMesh(fishGeometry, new THREE.MeshBasicMaterial(), 2);
   let fish = new THREE.InstancedMesh(fishGeometry, material, 100);
   return fish;
 }

@@ -26,7 +26,7 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.position.z = 10;
+  camera.position.z = 4;
   camera.position.y = 1;
   camera.position.x = 1;
   camera.lookAt(0, 0, 0);
@@ -42,17 +42,16 @@ function initRenderer() {
 function initShapes() {
   const fishes = fish.createFish(UNIFORMS);
 
-  const matrix1 = (new THREE.Matrix4()).makeTranslation(0.3,0.4,0.0);
+  const matrix1 = (new THREE.Matrix4()).makeTranslation(1.0,1,0.0);
   fishes.setMatrixAt(0,matrix1);
+  const matrix2 = (new THREE.Matrix4()).makeTranslation(-1.0,1,0.0);
+  fishes.setMatrixAt(1,matrix2);
   fishes.instanceMatrix.needsUpdate = true;
 
   const axesHelper = new THREE.AxesHelper( 5 );
   scene.add( axesHelper );
  
   scene.add(fishes);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-  scene.add(ambientLight);
 
 }
 
