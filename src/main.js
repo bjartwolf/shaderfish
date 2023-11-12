@@ -26,7 +26,9 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.position.z = 5;
+  camera.position.z = 3;
+  camera.position.y = 3;
+  camera.position.x = 3;
   camera.lookAt(0, 0, 0);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
@@ -39,7 +41,9 @@ function initRenderer() {
 
 function initShapes() {
   const fishyBeziers = fish.createFish(UNIFORMS);
-  
+  const axesHelper = new THREE.AxesHelper( 5 );
+  scene.add( axesHelper );
+ 
   scene.add(fishyBeziers);
 //  const instancedFishMesh = new THREE.InstancedMesh(fishyBeziers)
 }
@@ -48,7 +52,8 @@ function render() {
   requestAnimationFrame(render);
   controls.update();
   renderer.render(scene, camera);
-  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
+  UNIFORMS.time.value = 1.0; 
+  //UNIFORMS.time.value = (Date.now() - t0) * 0.001;
 }
 
 init();
