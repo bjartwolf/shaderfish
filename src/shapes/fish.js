@@ -8,7 +8,7 @@ function createBezier(vectors, side) {
     vectors[2],
     vectors[3]
   );
-  let n = 15;
+  let n = 5;
   const points = curve.getPoints(n);
 
   var shape = new THREE.Shape();
@@ -71,7 +71,7 @@ export function createFish(UNIFORMS) {
   let material = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode,
-    wireframe: true,
+//    wireframe: true,
     transparent: true,
     uniforms: UNIFORMS,
   });
@@ -160,6 +160,7 @@ export function createFish(UNIFORMS) {
     ),
   ];
   let fishGeometry= BufferGeometryUtils.mergeGeometries(fishyBeziers);
-  let fish = new THREE.InstancedMesh(fishGeometry, material, 4000);
+  let fish = new THREE.InstancedMesh(fishGeometry, new THREE.MeshBasicMaterial(), 2);
+//  let fish = new THREE.InstancedMesh(fishGeometry, material, 2);
   return fish;
 }
