@@ -52,7 +52,7 @@ export function createFish(UNIFORMS) {
     uniforms: UNIFORMS,
   });
 
-  let fishyBeziers1 = [
+  let fishyBeziers = [
     createBezier([
       new THREE.Vector2(1.0, 0.0),
       new THREE.Vector2(0.896, 0.062),
@@ -89,8 +89,6 @@ export function createFish(UNIFORMS) {
       new THREE.Vector2(0.104, 0.938),
       new THREE.Vector2(0.0, 1.0),
     ], 1),
-  ];
-  let fishyBeziers3 = [
     createBezier([
       new THREE.Vector2(0.0, 1.0),
       new THREE.Vector2(-0.042, 0.834),
@@ -111,11 +109,7 @@ export function createFish(UNIFORMS) {
     ], 2),
   ];
   let group = new THREE.Group();
-  fishyBeziers1.forEach((fishGeometry) => {
-    const line = new THREE.Line(fishGeometry, material);
-    group.add(line);
-  });
-  fishyBeziers3.forEach((fishGeometry) => {
+  fishyBeziers.forEach((fishGeometry) => {
     const line = new THREE.Line(fishGeometry, material);
     group.add(line);
   });
