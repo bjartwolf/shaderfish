@@ -19,9 +19,9 @@ function createBezier(vectors, side) {
   }
 
   var extrudeSettings = {
-    steps: 1,
+    steps: 10,
     curveSegments: n,
-    depth: 0.2, // Depth of the extrusion
+    depth: 0.3, // Depth of the extrusion
     bevelEnabled: false, // This can be true if you want beveled edges
   };
 
@@ -70,7 +70,7 @@ export function createFish(UNIFORMS) {
   let material = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode,
-//    wireframe: true,
+    wireframe: true,
     transparent: true,
     uniforms: UNIFORMS,
   });
