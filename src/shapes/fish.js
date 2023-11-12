@@ -1,4 +1,3 @@
-export const name = "fish";
 import * as THREE from "three";
 
 function createBezier(vectors, side) {
@@ -65,7 +64,7 @@ export function createFish(UNIFORMS) {
     ], 1),
     createBezier([
       new THREE.Vector2(0.766, 0.202),
-      new THREE.Vector2(0.66, 0.208),
+      new THREE.Vector2(0.66, 0.208),   
       new THREE.Vector2(0.589, 0.217),
       new THREE.Vector2(0.5, 0.25),
     ], 1),
