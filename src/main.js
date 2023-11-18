@@ -41,18 +41,20 @@ function initRenderer() {
 }
 
 async function initShapes() {
-  const fishes = await fish.createFish(UNIFORMS);
-  scene.add(fishes);
+//  const fishes = await fish.createFish(UNIFORMS);
+//  scene.add(fishes);
 
   const instancedFishses = await fish.createInstancedFish(UNIFORMS);
 
   for (var i = 0; i < 100; i++) {
     for (var j = 0; j < 100; j++) {
-      const matrix = new THREE.Matrix4();//.makeTranslation(1.0 * i, 1.0, 1.0);
+      const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 1.0);
       instancedFishses.setMatrixAt(i * 100 + j, matrix);
     }
   }
   instancedFishses.instanceMatrix.needsUpdate = true;
+  scene.add(instancedFishses)
+
 
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);

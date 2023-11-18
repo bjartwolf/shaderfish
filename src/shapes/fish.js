@@ -34,12 +34,14 @@ const vertexShaderCodeInstanced = `
 uniform float time;
 void main() {
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  //if (color.r > 0.5) {
-  //  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
-  //} else if (color.b > 0.5) {
-  //  modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
-  // }
-  vec4 worldSpaceCoordinates = modelViewMatrix* instanceMatrix * modelSpaceCoordinates;
+  if (color.g > 0.5) {
+    modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
+  } else if (color.r > 0.5) {
+    modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
+  } else if (color.b > 0.5) {
+    modelSpaceCoordinates.y = modelSpaceCoordinates.y*abs(sin(time));
+  }
+  vec4 worldSpaceCoordinates = modelViewMatrix * instanceMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
   gl_Position = screenSpaceCoordinate;
@@ -64,9 +66,8 @@ export async function createInstancedFish(UNIFORMS) {
         let mesh = gltf.scene.children[0];
         console.log("loaded instanced fish");
 
-        console.log(mesh.material)
         let fish = new THREE.InstancedMesh(
-          gltf.scene.geometry,
+          mesh.geometry,
           instancedMaterial,
           10000
         );
