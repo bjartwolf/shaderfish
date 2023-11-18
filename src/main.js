@@ -9,8 +9,24 @@ t0 = Date.now();
 const WIDTH = 500;
 const HEIGHT = 500;
 
+
+function loadTexture(url) {
+    return new Promise((resolve, reject) => {
+        const loader = new THREE.TextureLoader();
+        loader.load(url, function(ok) { return resolve(ok);}, undefined, function(err) { return reject(err);});
+    });
+}
+
+const texture = await loadTexture('assets/dalle.jpg');
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 4, 4 );
+//texture.needsUpdate = true;
+console.log(texture.image.width)
+
 const UNIFORMS = {
   time: { value: 0.0 },
+  fishTexture: { value: texture}
 };
 
 function init() {
@@ -36,14 +52,17 @@ function initCamera() {
 }
 
 function initRenderer() {
-  renderer = new THREE.WebGLRenderer();
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('webgl2');
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, context: context });
+//  console.log(renderer.capabilities.isWebGL2);
+
   renderer.setSize(WIDTH, HEIGHT);
 }
 
 async function initShapes() {
-//  const fishes = await fish.createFish(UNIFORMS);
-//  scene.add(fishes);
-
+  const fishes = await fish.createFish(UNIFORMS);
+  scene.add(fishes);
   const instancedFishses = await fish.createInstancedFish(UNIFORMS);
 
   for (var i = 0; i < 100; i++) {
@@ -59,10 +78,10 @@ async function initShapes() {
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
 
-  const color = 0xffffff;
-  const intensity = 1;
-  const light = new THREE.AmbientLight(color, intensity);
-  scene.add(light);
+//  const color = 0xffffff;
+//  const intensity = 1;
+//  const light = new THREE.AmbientLight(color, intensity);
+//  scene.add(light);
 }
 
 function render() {

@@ -3,9 +3,15 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const loader = new GLTFLoader();
 const fragmentShaderCode = `
+precision highp int;
+precision highp float;
+
 uniform float time;
+uniform sampler2D fishTexture;
+varying vec2 vUv;
+
 void main() {
-  gl_FragColor = vec4(1.0,1.0,0.0, 0.4);
+  gl_FragColor = texture2D(fishTexture, vUv);
 } `;
 
 /// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper
@@ -13,8 +19,14 @@ void main() {
 /// It could possibly work to just have the one line animated and use composition of those
 /// using matrixes and compose them to one fish. That would lead to some issues later with pixelshaders
 const vertexShaderCode = `
+precision highp int;
+precision highp float;
+
 uniform float time;
+varying vec2 vUv;
+
 void main() {
+  vUv = position.xy;
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
   if (color.g > 0.5) {
     modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
@@ -31,8 +43,15 @@ void main() {
 `;
 
 const vertexShaderCodeInstanced = `
+precision highp int;
+precision highp float;
+
 uniform float time;
+varying vec2 vUv;
+
 void main() {
+  //vUv = uv;
+  vUv = position.xy;
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
   if (color.g > 0.5) {
     modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
@@ -47,6 +66,7 @@ void main() {
   gl_Position = screenSpaceCoordinate;
 }
 `;
+const textureLoader = new THREE.TextureLoader();
 
 export async function createInstancedFish(UNIFORMS) {
   let instancedMaterial = new THREE.ShaderMaterial({
@@ -55,8 +75,9 @@ export async function createInstancedFish(UNIFORMS) {
     vertexColors: true,
     //    wireframe: true,
     transparent: true,
-    uniforms: UNIFORMS,
+    uniforms: UNIFORMS
   });
+ console.log(UNIFORMS)
 
   return new Promise((resolve, reject) => {
     loader.load(
@@ -83,7 +104,7 @@ export async function createInstancedFish(UNIFORMS) {
 
 
 export async function createFish(UNIFORMS) {
-  let nonInstancedMaterial = new THREE.ShaderMaterial({
+   let nonInstancedMaterial = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode,
     vertexColors: true,
