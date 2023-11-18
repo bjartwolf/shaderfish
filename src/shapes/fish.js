@@ -5,7 +5,7 @@ const loader = new GLTFLoader();
 const fragmentShaderCode = `
 uniform float time;
 void main() {
-  gl_FragColor = vec4(1.0,0.0,0.0, 0.7);
+  gl_FragColor = vec4(1.0,1.0,0.0, 0.4);
 } `;
 
 /// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper

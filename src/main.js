@@ -48,7 +48,7 @@ async function initShapes() {
 
   for (var i = 0; i < 100; i++) {
     for (var j = 0; j < 100; j++) {
-      const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 1.0);
+      const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 0.10);
       instancedFishses.setMatrixAt(i * 100 + j, matrix);
     }
   }
