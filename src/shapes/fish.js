@@ -16,11 +16,13 @@ const vertexShaderCode = `
 uniform float time;
 void main() {
   vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
-  //if (color.r > 0.5) {
-  //  modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
-  //} else if (color.b > 0.5) {
-  //  modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
-  // }
+  if (color.g > 0.5) {
+    modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
+  } else if (color.r > 0.5) {
+    modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
+  } else if (color.b > 0.5) {
+    modelSpaceCoordinates.y = modelSpaceCoordinates.y*abs(sin(time));
+  }
   vec4 worldSpaceCoordinates = modelViewMatrix * modelSpaceCoordinates;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
@@ -61,12 +63,11 @@ export async function createInstancedFish(UNIFORMS) {
       function (gltf) {
         let mesh = gltf.scene.children[0];
         console.log("loaded instanced fish");
-        mesh.material = mesh;
 
         console.log(mesh.material)
         let fish = new THREE.InstancedMesh(
           gltf.scene.geometry,
-          material,
+          instancedMaterial,
           10000
         );
         resolve(fish);
@@ -85,7 +86,7 @@ export async function createFish(UNIFORMS) {
     vertexShader: vertexShaderCode,
     fragmentShader: fragmentShaderCode,
     vertexColors: true,
-    //    wireframe: true,
+    //wireframe: true,
     transparent: true,
     uniforms: UNIFORMS,
   });

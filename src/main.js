@@ -27,9 +27,9 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.position.z = 15;
-  camera.position.y = 15;
-  camera.position.x = 5;
+  camera.position.z = 5;
+  camera.position.y = 0;
+  camera.position.x = 0;
   camera.lookAt(0, 0, 0);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
@@ -42,22 +42,20 @@ function initRenderer() {
 
 async function initShapes() {
   const fishes = await fish.createFish(UNIFORMS);
-  console.log(fishes)
+  scene.add(fishes);
 
-  /*
+  const instancedFishses = await fish.createInstancedFish(UNIFORMS);
+
   for (var i = 0; i < 100; i++) {
     for (var j = 0; j < 100; j++) {
-      const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 0.0);
-      fishes.setMatrixAt(i * 100 + j, matrix);
+      const matrix = new THREE.Matrix4();//.makeTranslation(1.0 * i, 1.0, 1.0);
+      instancedFishses.setMatrixAt(i * 100 + j, matrix);
     }
   }
-  fishes.instanceMatrix.needsUpdate = true;
-  */
-  scene.add(fishes);
+  instancedFishses.instanceMatrix.needsUpdate = true;
 
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
-
 
   const color = 0xffffff;
   const intensity = 1;
@@ -69,7 +67,7 @@ function render() {
   requestAnimationFrame(render);
   controls.update();
   renderer.render(scene, camera);
-  UNIFORMS.time.value = 1.0;
+//  UNIFORMS.time.value = 1.0;
   UNIFORMS.time.value = (Date.now() - t0) * 0.001;
 }
 
