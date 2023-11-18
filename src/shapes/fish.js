@@ -11,7 +11,7 @@ uniform sampler2D fishTexture;
 varying vec2 vUv;
 
 void main() {
-  gl_FragColor = texture2D(fishTexture, vUv);
+  gl_FragColor = texture2D(fishTexture, vUv*1.0);
 } `;
 
 /// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper

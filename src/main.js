@@ -6,8 +6,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 let scene, camera, renderer, controls, t0;
 
 t0 = Date.now();
-const WIDTH = 500;
-const HEIGHT = 500;
+const WIDTH = 1500;
+const HEIGHT = 1500;
 
 
 function loadTexture(url) {
@@ -17,7 +17,7 @@ function loadTexture(url) {
     });
 }
 
-const texture = await loadTexture('assets/dalle.jpg');
+const texture = await loadTexture('assets/shells.webp');
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set( 4, 4 );
@@ -43,11 +43,12 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.position.z = 5;
-  camera.position.y = 0;
-  camera.position.x = 0;
-  camera.lookAt(0, 0, 0);
+  camera.translateX(50);
+  camera.translateZ(10);
+  camera.translateY(50);
+//  camera.lookAt(new THREE.Vector3(50.0,50.0,0.0)); // does not work with controls enabled
   controls = new OrbitControls(camera, renderer.domElement);
+  controls.target=new THREE.Vector3(50.0,50.0,0.0);
   controls.update();
 }
 
