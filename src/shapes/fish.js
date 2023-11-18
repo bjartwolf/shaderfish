@@ -3,9 +3,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const loader = new GLTFLoader();
 const fragmentShaderCode = `
-precision highp int;
-precision highp float;
-
 uniform float time;
 uniform sampler2D fishTexture;
 varying vec2 vUv;
@@ -19,9 +16,6 @@ void main() {
 /// It could possibly work to just have the one line animated and use composition of those
 /// using matrixes and compose them to one fish. That would lead to some issues later with pixelshaders
 const vertexShaderCodeInstanced = `
-precision highp int;
-precision highp float;
-
 uniform float time;
 varying vec2 vUv;
 
