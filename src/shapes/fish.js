@@ -50,7 +50,7 @@ export async function createInstancedFish(UNIFORMS) {
 
   return new Promise((resolve, reject) => {
     loader.load(
-      "assets/fish.glb",
+      "assets/flatfish1.glb",
 
       function (gltf) {
         let mesh = gltf.scene.children[0];
