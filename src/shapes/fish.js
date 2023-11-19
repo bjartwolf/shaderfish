@@ -26,10 +26,7 @@ void main() {
   if (color.g > 0.5) {
     float t = 1.0-abs(sin(time));
     vec2 P0 = vec2(msc.x,msc.y); 
-    vec2 P1 = P0 - (P0.x+P0.y-1.0)/2.0; 
-    vec2 Q = P0 + t*(P1-P0);
-    msc.x = Q.x;
-    msc.y = Q.y;
+    msc.xy = P0 - t*((P0.x+P0.y-1.0)/2.0);
   } else if (color.r > 0.5) {
     msc.x = msc.x*abs(sin(time));
   } else if (color.b > 0.5) {
