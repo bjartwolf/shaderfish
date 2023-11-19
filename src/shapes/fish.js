@@ -8,7 +8,8 @@ uniform sampler2D fishTexture;
 varying vec2 vUv;
 
 void main() {
-  gl_FragColor = texture2D(fishTexture, vUv*1.0);
+  gl_FragColor = texture2D(fishTexture, vUv);
+  gl_FragColor.xy = gl_FragColor.xy +vec2(0.2,0.2)*sin(time*3.0); 
 } `;
 
 const vertexShaderCodeInstanced = `
