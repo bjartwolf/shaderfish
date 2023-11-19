@@ -24,7 +24,7 @@ function loadTexture(url) {
   });
 }
 
-const texture = await loadTexture("assets/shells.webp");
+const texture = await loadTexture("assets/fish_uv.png");
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set(4, 4);
