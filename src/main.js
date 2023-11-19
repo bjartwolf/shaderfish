@@ -5,8 +5,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 let scene, camera, renderer, controls, t0;
 
 t0 = Date.now();
-const WIDTH = 1500;
-const HEIGHT = 1500;
+const WIDTH = 500;
+const HEIGHT = 500;
 
 function loadTexture(url) {
   return new Promise((resolve, reject) => {
@@ -50,12 +50,12 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.translateX(50);
+  camera.translateX(0);
   camera.translateZ(10);
-  camera.translateY(50);
+  camera.translateY(0);
   //  camera.lookAt(new THREE.Vector3(50.0,50.0,0.0)); // does not work with controls enabled
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.target = new THREE.Vector3(50.0, 50.0, 0.0);
+  controls.target = new THREE.Vector3(0.0, 0.0, 0.0);
   controls.update();
 }
 
@@ -73,8 +73,15 @@ async function initShapes() {
 
   for (var i = 0; i < 100; i++) {
     for (var j = 0; j < 100; j++) {
-      const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 0.1);
-      instancedFishses.setMatrixAt(i * 100 + j, matrix);
+      if (i == 0 && j == 1) {
+        const turn = new THREE.Matrix4().makeRotationZ(Math.PI);
+        const move = new THREE.Matrix4().makeTranslation(1.0,1.0,0.0);
+        const turnAndMove = new THREE.Matrix4().multiplyMatrices(move, turn); 
+        instancedFishses.setMatrixAt(1, turnAndMove);
+      } else {
+        const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 0.0);
+        instancedFishses.setMatrixAt(i * 100 + j, matrix);
+      }
     }
   }
   instancedFishses.instanceMatrix.needsUpdate = true;
