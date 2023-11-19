@@ -5,8 +5,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 let scene, camera, renderer, controls, t0;
 
 t0 = Date.now();
-const WIDTH = 500;
-const HEIGHT = 500;
+const WIDTH = 1000;
+const HEIGHT = 1000;
 
 function loadTexture(url) {
   return new Promise((resolve, reject) => {
@@ -25,11 +25,6 @@ function loadTexture(url) {
 }
 
 const texture = await loadTexture("/fish_uv.png");
-texture.wrapS = THREE.RepeatWrapping;
-texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set(4, 4);
-//texture.needsUpdate = true;
-console.log(texture.image.width);
 
 const UNIFORMS = {
   time: { value: 0.0 },
@@ -50,12 +45,14 @@ function init() {
 
 function initCamera() {
   camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  camera.translateX(0);
+  let camx = 5;
+  let camy = 2;
+  camera.translateX(camx);
   camera.translateZ(10);
-  camera.translateY(0);
+  camera.translateY(camy);
   //  camera.lookAt(new THREE.Vector3(50.0,50.0,0.0)); // does not work with controls enabled
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.target = new THREE.Vector3(0.0, 0.0, 0.0);
+  controls.target = new THREE.Vector3(camx, camy, 0.0);
   controls.update();
 }
 
