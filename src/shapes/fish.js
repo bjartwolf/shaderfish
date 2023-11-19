@@ -11,6 +11,10 @@ void main() {
   gl_FragColor = texture2D(fishTexture, vUv*1.0);
 } `;
 
+/// I am not convinced the "flattening" to the y and x axis is actually maintaining the proper
+/// perspective required for perfect composition, but for now I guess it is ok.
+/// It could possibly work to just have the one line animated and use composition of those
+/// using matrixes and compose them to one fish. That would lead to some issues later with pixelshaders
 const vertexShaderCodeInstanced = `
 uniform float time;
 varying vec2 vUv;
@@ -21,9 +25,11 @@ void main() {
   vec4 msc = vec4(position.xyz, 1.0);
   if (color.g > 0.5) {
     float t = 1.0-abs(sin(time));
-    vec2 P0 = msc.xy;
-    vec2 Q = P0 + t*((P0.x+P0.y-1.0)/2.0);
-    msc.xy = Q.xy;
+    vec2 P0 = vec2(msc.x,msc.y); 
+    vec2 P1 = P0 - (P0.x+P0.y-1.0)/2.0; 
+    vec2 Q = P0 + t*(P1-P0);
+    msc.x = Q.x;
+    msc.y = Q.y;
   } else if (color.r > 0.5) {
     msc.x = msc.x*abs(sin(time));
   } else if (color.b > 0.5) {
