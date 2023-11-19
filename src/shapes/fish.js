@@ -22,15 +22,18 @@ varying vec2 vUv;
 void main() {
   //vUv = uv;
   vUv = position.xy;
-  vec4 modelSpaceCoordinates = vec4(position.xyz, 1.0);
+  vec4 msc = vec4(position.xyz, 1.0);
   if (color.g > 0.5) {
-    modelSpaceCoordinates.y = ((1.0-modelSpaceCoordinates.x)*(1.0-abs(sin(time)))+modelSpaceCoordinates.y*(abs(sin(time))));
+    float t = 1.0-abs(sin(time));
+    vec2 P0 = msc.xy;
+    vec2 Q = P0 + t*((P0.x+P0.y-1.0)/2.0);
+    msc.xy = Q.xy;
   } else if (color.r > 0.5) {
-    modelSpaceCoordinates.x = modelSpaceCoordinates.x*abs(sin(time));
+    msc.x = msc.x*abs(sin(time));
   } else if (color.b > 0.5) {
-    modelSpaceCoordinates.y = modelSpaceCoordinates.y*abs(sin(time));
+    msc.y = msc.y*abs(sin(time));
   }
-  vec4 worldSpaceCoordinates = modelViewMatrix * instanceMatrix * modelSpaceCoordinates;
+  vec4 worldSpaceCoordinates = modelViewMatrix * instanceMatrix * msc;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
 
   gl_Position = screenSpaceCoordinate;
