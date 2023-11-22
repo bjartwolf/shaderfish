@@ -8,8 +8,8 @@ uniform sampler2D fishTexture;
 varying vec2 vUv;
 
 void main() {
-  gl_FragColor = texture2D(fishTexture, vUv);
-  gl_FragColor.xy = gl_FragColor.xy +vec2(0.2,0.2)*sin(time*3.0); 
+  gl_FragColor = texture2D(fishTexture, vUv*1.0);
+  //gl_FragColor.xy = gl_FragColor.xy +vec2(0.2,0.2)*sin(time*3.0); 
 } `;
 
 const vertexShaderCodeInstanced = `
@@ -36,7 +36,7 @@ void main() {
 }
 `;
 
-export async function createInstancedFish(UNIFORMS) {
+export async function createInstancedFish(UNIFORMS, numberOfFish) {
   let instancedMaterial = new THREE.ShaderMaterial({
     vertexShader: vertexShaderCodeInstanced,
     fragmentShader: fragmentShaderCode,
@@ -58,7 +58,7 @@ export async function createInstancedFish(UNIFORMS) {
         let fish = new THREE.InstancedMesh(
           mesh.geometry,
           instancedMaterial,
-          10000
+          numberOfFish 
         );
         resolve(fish);
       },

@@ -44,11 +44,11 @@ function init() {
 }
 
 function initCamera() {
-  camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.01, 1000);
-  let camx = 5;
-  let camy = 2;
+  camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.001, 1000000);
+  let camx = 50;
+  let camy = 50;
   camera.translateX(camx);
-  camera.translateZ(10);
+  camera.translateZ(-100);
   camera.translateY(camy);
   //  camera.lookAt(new THREE.Vector3(50.0,50.0,0.0)); // does not work with controls enabled
   controls = new OrbitControls(camera, renderer.domElement);
@@ -66,20 +66,30 @@ function initRenderer() {
 }
 
 async function initShapes() {
-  const instancedFishses = await fish.createInstancedFish(UNIFORMS);
+  let matrixes = await (await fetch("/matrixes.json")).json();
 
-  for (var i = 0; i < 100; i++) {
-    for (var j = 0; j < 100; j++) {
-      if (i == 0 && j == 1) {
-        const turn = new THREE.Matrix4().makeRotationZ(Math.PI);
-        const move = new THREE.Matrix4().makeTranslation(1.0,1.0,0.0);
-        const turnAndMove = new THREE.Matrix4().multiplyMatrices(move, turn); 
-        instancedFishses.setMatrixAt(1, turnAndMove);
-      } else {
-        const matrix = new THREE.Matrix4().makeTranslation(1.0 * i, 1.0 * j, 0.0);
-        instancedFishses.setMatrixAt(i * 100 + j, matrix);
-      }
-    }
+  const instancedFishses = await fish.createInstancedFish(
+    UNIFORMS,
+    matrixes.length
+  );
+
+  for (var i = 0; i < matrixes.length; i++) {
+    const matrix = new THREE.Matrix4().identity();
+    let a = matrixes[i][0][0];
+    let c = matrixes[i][0][1];
+    let b = matrixes[i][1][0];
+    let d = matrixes[i][1][1];
+    let e = matrixes[i][2][0];
+    let f = matrixes[i][2][1];
+    matrix.set( a,b,0,e,
+                c,d,0,f,
+                0,0,1.0,0,
+                0,0,0,1.0); 
+
+    /*
+   */
+    instancedFishses.setMatrixAt(i, matrix);
+    console.log(matrix)
   }
   instancedFishses.instanceMatrix.needsUpdate = true;
   scene.add(instancedFishses);
