@@ -114,8 +114,8 @@ async function initShapes() {
   instancedFishses.instanceMatrix.needsUpdate = true;
   scene.add(instancedFishses);
 
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper);
+//  const axesHelper = new THREE.AxesHelper(5);
+//  scene.add(axesHelper);
 }
 
 function render() {
