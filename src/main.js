@@ -109,7 +109,6 @@ async function initShapes() {
     /*
    */
     instancedFishses.setMatrixAt(i, matrix);
-    console.log(matrix)
   }
   instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
 

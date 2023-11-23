@@ -10,7 +10,11 @@ varying vec3 fish_colors;
 
 void main() {
   gl_FragColor = texture2D(fishTexture, vUv*1.0);
-  gl_FragColor.xyz= gl_FragColor.xyz * (1.0-fish_colors.xyz);
+  vec2 normalized_position= vec2(vUv.x -0.2 ,vUv.y-0.3)*1.0;
+  float distance = length(normalized_position); 
+  float adjust = distance*distance;
+
+  gl_FragColor.xyz= mix(fish_colors.xyz*gl_FragColor.xyz, gl_FragColor.xyz+gl_FragColor.xyz*0.7,adjust);
 } `;
 
 const vertexShaderCodeInstanced = `
