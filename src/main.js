@@ -35,6 +35,8 @@ function loadTexture(url) {
 }
 
 const texture = await loadTexture("/fish_uv_3.png");
+texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(2, 2);
 
 const UNIFORMS = {
   time: { value: 0.0 },
@@ -80,9 +82,9 @@ async function initShapes() {
   let fishCount = matrixes.length;
   const colors = new Float32Array(fishCount*3);
   for (let i = 0; i < fishCount; i++) {
-    colors[i*3] = randFloat(0.1,0.9); 
-    colors[i*3+1] = randFloat(0.1,0.9); 
-    colors[i*3+1] = randFloat(0.1,0.9); 
+    colors[i*3] = randFloat(0.2,0.6); 
+    colors[i*3+1] = randFloat(0.2,0.6); 
+    colors[i*3+1] = randFloat(0.2,0.7); 
   }
   const colorAttributes = new THREE.InstancedBufferAttribute(colors, 3);
 
