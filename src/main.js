@@ -25,7 +25,7 @@ function loadTexture(url) {
   });
 }
 
-const texture = await loadTexture("/fish_uv_2.png");
+const texture = await loadTexture("/fish_uv_3.png");
 
 const UNIFORMS = {
   time: { value: 0.0 },
