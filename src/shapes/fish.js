@@ -43,7 +43,8 @@ export async function createInstancedFish(UNIFORMS, numberOfFish) {
     vertexColors: true,
     //    wireframe: true,
     transparent: true,
-    uniforms: UNIFORMS
+    uniforms: UNIFORMS,
+    side: THREE.DoubleSide
   });
  console.log(UNIFORMS)
 
