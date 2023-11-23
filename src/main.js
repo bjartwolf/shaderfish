@@ -6,8 +6,17 @@ import { randFloat } from "three/src/math/MathUtils";
 let scene, camera, renderer, controls, t0;
 
 t0 = Date.now();
-const WIDTH = 1000;
-const HEIGHT = 1000;
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
+
+window.addEventListener('resize', onWindowResize, false);
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 
 function loadTexture(url) {
   return new Promise((resolve, reject) => {
