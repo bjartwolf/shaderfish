@@ -23,14 +23,15 @@ void main() {
   //vUv = uv;
   vUv = position.xy;
   vec4 msc = vec4(position.xyz, 1.0);
+  float interpolate = abs(sin(time))*0.7+0.3;
   if (color.g > 0.5) {
-    float t = 1.0-abs(sin(time));
+    float t = 1.0-interpolate;
     vec2 P0 = vec2(msc.x,msc.y); 
     msc.xy = P0 - t*((P0.x+P0.y-1.0)/2.0);
   } else if (color.r > 0.5) {
-    msc.x = msc.x*abs(sin(time));
+    msc.x = msc.x*interpolate;
   } else if (color.b > 0.5) {
-    msc.y = msc.y*abs(sin(time));
+    msc.y = msc.y*interpolate;
   }
   vec4 worldSpaceCoordinates = modelViewMatrix * instanceMatrix * msc;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
