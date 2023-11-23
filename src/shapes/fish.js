@@ -6,15 +6,18 @@ const fragmentShaderCode = `
 uniform float time;
 uniform sampler2D fishTexture;
 varying vec2 vUv;
+varying vec3 fish_colors;
 
 void main() {
   gl_FragColor = texture2D(fishTexture, vUv*1.0);
-  //gl_FragColor.xy = gl_FragColor.xy +vec2(0.2,0.2)*sin(time*3.0); 
+  gl_FragColor.xyz= gl_FragColor.xyz * (1.0-fish_colors.xyz);
 } `;
 
 const vertexShaderCodeInstanced = `
 uniform float time;
+attribute vec3 fish_color;
 varying vec2 vUv;
+varying vec3 fish_colors;
 
 void main() {
   //vUv = uv;
@@ -31,7 +34,8 @@ void main() {
   }
   vec4 worldSpaceCoordinates = modelViewMatrix * instanceMatrix * msc;
   vec4 screenSpaceCoordinate = projectionMatrix * worldSpaceCoordinates;
-
+  fish_colors= fish_color;
+  
   gl_Position = screenSpaceCoordinate;
 }
 `;
@@ -50,7 +54,7 @@ export async function createInstancedFish(UNIFORMS, numberOfFish) {
 
   return new Promise((resolve, reject) => {
     loader.load(
-      "/flatfish1.glb",
+      "/flatfish2.glb",
 
       function (gltf) {
         let mesh = gltf.scene.children[0];

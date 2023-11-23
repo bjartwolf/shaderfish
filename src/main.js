@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as fish from "/shapes/fish.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { randFloat } from "three/src/math/MathUtils";
 
 let scene, camera, renderer, controls, t0;
 
@@ -24,7 +25,7 @@ function loadTexture(url) {
   });
 }
 
-const texture = await loadTexture("/fish_uv.png");
+const texture = await loadTexture("/fish_uv_2.png");
 
 const UNIFORMS = {
   time: { value: 0.0 },
@@ -67,10 +68,18 @@ function initRenderer() {
 
 async function initShapes() {
   let matrixes = await (await fetch("/matrixes.json")).json();
+  let fishCount = matrixes.length;
+  const colors = new Float32Array(fishCount*3);
+  for (let i = 0; i < fishCount; i++) {
+    colors[i*3] = randFloat(0.1,0.9); 
+    colors[i*3+1] = randFloat(0.1,0.9); 
+    colors[i*3+1] = randFloat(0.1,0.9); 
+  }
+  const colorAttributes = new THREE.InstancedBufferAttribute(colors, 3);
 
   const instancedFishses = await fish.createInstancedFish(
     UNIFORMS,
-    matrixes.length
+    fishCount 
   );
 
   for (var i = 0; i < matrixes.length; i++) {
@@ -91,6 +100,8 @@ async function initShapes() {
     instancedFishses.setMatrixAt(i, matrix);
     console.log(matrix)
   }
+  instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
+
   instancedFishses.instanceMatrix.needsUpdate = true;
   scene.add(instancedFishses);
 
