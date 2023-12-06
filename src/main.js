@@ -97,6 +97,9 @@ async function initShapes() {
   for (var i = 0; i < fishVec.length; i++) {
     let x = Math.floor(i/ 270);
     let z = i % 270;
+    if (z % 2 === 1) {
+      z = 270 -z;
+    }
     let translate = new THREE.Matrix4().makeTranslation(x,0,z);
     let matrix = new THREE.Matrix4().multiplyMatrices(m, translate); 
     fishVec[i] = i;
