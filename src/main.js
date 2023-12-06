@@ -101,7 +101,9 @@ async function initShapes() {
       z = 270 -z;
     }
     let translate = new THREE.Matrix4().makeTranslation(x,0,z);
-    let matrix = new THREE.Matrix4().multiplyMatrices(m, translate); 
+    let scale = new THREE.Matrix4().makeScale(8,8,8);
+    let matrix_1 = new THREE.Matrix4().multiplyMatrices(m, scale);
+    let matrix = new THREE.Matrix4().multiplyMatrices(matrix_1, translate);
     fishVec[i] = i;
     instancedFishses.setMatrixAt(i, matrix);
   }
