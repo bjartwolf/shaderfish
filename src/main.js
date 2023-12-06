@@ -3,9 +3,10 @@ import * as fish from "/shapes/fish.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { randFloat } from "three/src/math/MathUtils";
 
-let scene, camera, renderer, controls, t0, instancedFishses;
+let scene, camera, renderer, controls, t0, instancedFishses, raceClock;
 
 t0 = Date.now();
+raceClock = 0;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 let fishVec;
@@ -98,7 +99,7 @@ async function initShapes() {
     let z = i % 270;
     let translate = new THREE.Matrix4().makeTranslation(x,0,z);
     let matrix = new THREE.Matrix4().multiplyMatrices(m, translate); 
-    fishVec[i] = i*0.001; 
+    fishVec[i] = i;
     instancedFishses.setMatrixAt(i, matrix);
   }
   instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
@@ -120,15 +121,16 @@ function render() {
   if (instancedFishses) {
     var instanceMatrix = instancedFishses.instanceMatrix;
     for (var i = 0; i < fishVec.length; i += 1) {
-//    for (var i = 0; i < instanceMatrix.array.length; i += 16) {
-      var matrix = new THREE.Matrix4();
-      matrix.fromArray(instanceMatrix.array.slice(i*16, i*16 + 16));
-      let translateY = new THREE.Matrix4().makeTranslation(0,0.001*fishVec[i],0);
-      let moved = new THREE.Matrix4().multiplyMatrices(matrix, translateY); 
-      instancedFishses.setMatrixAt(i, moved)
+      if (fishVec[i] < raceClock) {
+        var matrix = new THREE.Matrix4();
+        matrix.fromArray(instanceMatrix.array.slice(i*16, i*16 + 16));
+        let translateY = new THREE.Matrix4().makeTranslation(0,0.001*fishVec[i],0);
+        let moved = new THREE.Matrix4().multiplyMatrices(matrix, translateY); 
+        instancedFishses.setMatrixAt(i, moved)
+      }
     }
     instancedFishses.instanceMatrix.needsUpdate = true;
-  
+    raceClock++;
   }
 }
 
