@@ -124,7 +124,7 @@ function render() {
       if (fishVec[i] < raceClock) {
         var matrix = new THREE.Matrix4();
         matrix.fromArray(instanceMatrix.array.slice(i*16, i*16 + 16));
-        let translateY = new THREE.Matrix4().makeTranslation(0,0.0001*fishVec[i],0);
+        let translateY = new THREE.Matrix4().makeTranslation(0,0.00001*fishVec[i],0);
         let moved = new THREE.Matrix4().multiplyMatrices(matrix, translateY); 
         instancedFishses.setMatrixAt(i, moved)
       }
