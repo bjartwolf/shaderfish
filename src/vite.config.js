@@ -2,7 +2,7 @@
 export default {
   assetsInclude: ['**/*.png', '**/*.glb'], 
   build: {
-    target: 'esnxt'
+    target: 'esnext'
   }
   // ...
 }
