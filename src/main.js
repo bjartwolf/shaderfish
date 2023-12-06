@@ -130,7 +130,7 @@ function render() {
       }
     }
     instancedFishses.instanceMatrix.needsUpdate = true;
-    raceClock++;
+    raceClock = raceClock + 10;
   }
 }
 
