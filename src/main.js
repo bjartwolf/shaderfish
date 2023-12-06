@@ -135,13 +135,13 @@ function render() {
       }
     }
     instancedFishses.instanceMatrix.needsUpdate = true;
-    raceClock = raceClock + 10;
-    if (raceClock < 4000) {
-      camera.translateY(0.1);
-      camera.translateZ(0.1);
-      camera.translateX(0.1);
-    } if (raceClock > 10000 && raceClock < 14000)
-      camera.translateY(-0.1);
+    raceClock = raceClock + 100;
+    if (raceClock < 7000) {
+      camera.translateY(1);
+      camera.translateZ(1);
+      camera.translateX(1);
+    } if (raceClock > 10000 && raceClock < 15000)
+      camera.translateY(-1);
    }
 }
 
