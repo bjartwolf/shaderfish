@@ -77,7 +77,7 @@ function initRenderer() {
   renderer.setSize(WIDTH, HEIGHT);
 }
 async function initShapes() {
-  let fishCount = 7153;//0;
+  let fishCount = 71530;
   fishVec = new Array(fishCount);//matrixes.length;
   const colors = new Float32Array(fishCount*3);
   for (let i = 0; i < fishCount; i++) {
@@ -94,9 +94,11 @@ async function initShapes() {
 
   const m = new THREE.Matrix4().identity();
   for (var i = 0; i < fishVec.length; i++) {
-    let translateX = new THREE.Matrix4().makeTranslation(i,0,0);
-    let matrix = new THREE.Matrix4().multiplyMatrices(m, translateX); 
-    fishVec[i] = i; 
+    let x = Math.floor(i/ 270);
+    let z = i % 270;
+    let translate = new THREE.Matrix4().makeTranslation(x,0,z);
+    let matrix = new THREE.Matrix4().multiplyMatrices(m, translate); 
+    fishVec[i] = i*0.001; 
     instancedFishses.setMatrixAt(i, matrix);
   }
   instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
