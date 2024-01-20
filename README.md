@@ -1,7 +1,5 @@
 # shaderfish
-Escher-fish-tesselation using a fish from Blender and vertex shaders in three.js
-
-https://fish.bjartnes.dev/
+Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 
 # Run
 ## Install deps
@@ -22,6 +20,7 @@ https://github.com/mollerse/3d-visualization-workshop
 
 On fish tesselations:
 https://github.com/einarwh/escher-workshop
+
 
 On fish with pixel shaders:
 http://roy.red/posts/building-eschers-square-limit/
