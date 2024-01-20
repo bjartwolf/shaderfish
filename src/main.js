@@ -3,12 +3,13 @@ import * as fish from "/shapes/fish.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { randFloat } from "three/src/math/MathUtils";
 
-let scene, camera, renderer, controls, t0;
+let scene, camera, renderer, controls, t0, instancedFishses, raceClock;
 
 t0 = Date.now();
+raceClock = 0;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-
+let fishVec;
 window.addEventListener('resize', onWindowResize, false);
 
 function onWindowResize(){
@@ -76,10 +77,9 @@ function initRenderer() {
 
   renderer.setSize(WIDTH, HEIGHT);
 }
-
 async function initShapes() {
-  let matrixes = await (await fetch("/matrixes.json")).json();
-  let fishCount = matrixes.length;
+  let fishCount = 71530;
+  fishVec = new Array(fishCount);//matrixes.length;
   const colors = new Float32Array(fishCount*3);
   for (let i = 0; i < fishCount; i++) {
     colors[i*3] = randFloat(0.2,0.6); 
@@ -88,26 +88,23 @@ async function initShapes() {
   }
   const colorAttributes = new THREE.InstancedBufferAttribute(colors, 3);
 
-  const instancedFishses = await fish.createInstancedFish(
+  instancedFishses = await fish.createInstancedFish(
     UNIFORMS,
     fishCount 
   );
 
-  for (var i = 0; i < matrixes.length; i++) {
-    const matrix = new THREE.Matrix4().identity();
-    let a = matrixes[i][0][0];
-    let c = matrixes[i][0][1];
-    let b = matrixes[i][1][0];
-    let d = matrixes[i][1][1];
-    let e = matrixes[i][2][0];
-    let f = matrixes[i][2][1];
-    matrix.set( a,b,0,e,
-                c,d,0,f,
-                0,0,1.0,0,
-                0,0,0,1.0); 
-
-    /*
-   */
+  const m = new THREE.Matrix4().identity();
+  for (var i = 0; i < fishVec.length; i++) {
+    let x = Math.floor(i/ 270);
+    let z = i % 270;
+    if (z % 2 === 1) {
+      z = 270 -z;
+    }
+    let translate = new THREE.Matrix4().makeTranslation(x,0,z);
+    let scale = new THREE.Matrix4().makeScale(8,8,8);
+    let matrix_1 = new THREE.Matrix4().multiplyMatrices(m, scale);
+    let matrix = new THREE.Matrix4().multiplyMatrices(matrix_1, translate);
+    fishVec[i] = i;
     instancedFishses.setMatrixAt(i, matrix);
   }
   instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
@@ -115,8 +112,8 @@ async function initShapes() {
   instancedFishses.instanceMatrix.needsUpdate = true;
   scene.add(instancedFishses);
 
-//  const axesHelper = new THREE.AxesHelper(5);
-//  scene.add(axesHelper);
+  const axesHelper = new THREE.AxesHelper(5);
+  scene.add(axesHelper);
 }
 
 function render() {
@@ -124,7 +121,28 @@ function render() {
   controls.update();
   renderer.render(scene, camera);
   //  UNIFORMS.time.value = 1.0;
+  const m = new THREE.Matrix4().identity();
   UNIFORMS.time.value = (Date.now() - t0) * 0.001;
+  if (instancedFishses) {
+    var instanceMatrix = instancedFishses.instanceMatrix;
+    for (var i = 0; i < fishVec.length; i += 1) {
+      if (fishVec[i] < raceClock) {
+        var matrix = new THREE.Matrix4();
+        matrix.fromArray(instanceMatrix.array.slice(i*16, i*16 + 16));
+        let translateY = new THREE.Matrix4().makeTranslation(0,0.000003*fishVec[i],0);
+        let moved = new THREE.Matrix4().multiplyMatrices(matrix, translateY); 
+        instancedFishses.setMatrixAt(i, moved)
+      }
+    }
+    instancedFishses.instanceMatrix.needsUpdate = true;
+    raceClock = raceClock + 100;
+    if (raceClock < 7000) {
+      camera.translateY(1);
+      camera.translateZ(1);
+      camera.translateX(1);
+    } if (raceClock > 10000 && raceClock < 15000)
+      camera.translateY(-1);
+   }
 }
 
 init();
