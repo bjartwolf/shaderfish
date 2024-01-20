@@ -24,10 +24,9 @@ varying vec2 vUv;
 varying vec3 fish_colors;
 
 void main() {
-  //vUv = uv;
   vUv = position.xy;
   vec4 msc = vec4(position.xyz, 1.0);
-  float interpolate = abs(sin(time))*0.7+0.3;
+  float interpolate = abs(sin(time));
   if (color.g > 0.5) {
     float t = 1.0-interpolate;
     vec2 P0 = vec2(msc.x,msc.y); 
