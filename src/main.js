@@ -1,131 +1,92 @@
 import * as THREE from "three";
-import * as fish from "/shapes/fish.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { randFloat } from "three/src/math/MathUtils";
 
-let scene, camera, renderer, controls, t0;
+function main() {
 
-t0 = Date.now();
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
+	const canvas = document.querySelector( '#c' );
+	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
+	renderer.autoClearColor = false;
 
-window.addEventListener('resize', onWindowResize, false);
+	const camera = new THREE.OrthographicCamera(
+		- 1, // left
+		1, // right
+		1, // top
+		- 1, // bottom
+		- 1, // near,
+		1, // far
+	);
+	const scene = new THREE.Scene();
+	const plane = new THREE.PlaneGeometry( 2, 2 );
 
-function onWindowResize(){
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
+	const fragmentShader = `
+  #include <common>
 
+  uniform vec3 iResolution;
+  uniform float iTime;
 
-function loadTexture(url) {
-  return new Promise((resolve, reject) => {
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      url,
-      function (ok) {
-        return resolve(ok);
-      },
-      undefined,
-      function (err) {
-        return reject(err);
-      }
-    );
-  });
-}
+  // By iq: https://www.shadertoy.com/user/iq
+  // license: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+  void mainImage( out vec4 fragColor, in vec2 fragCoord )
+  {
+      // Normalized pixel coordinates (from 0 to 1)
+      vec2 uv = fragCoord/iResolution.xy;
 
-const texture = await loadTexture("/fish_uv_3.png");
-texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set(2, 2);
+      // Time varying pixel color
+	  //vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4));
 
-const UNIFORMS = {
-  time: { value: 0.0 },
-  fishTexture: { value: texture },
-};
+      vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx*40.0+vec3(0,2,4));
 
-function init() {
-  scene = new THREE.Scene();
-
-  initRenderer();
-  document.body.appendChild(renderer.domElement);
-
-  initShapes();
-  initCamera();
-
-  renderer.render(scene, camera);
-}
-
-function initCamera() {
-  camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.001, 1000000);
-  let camx = 50;
-  let camy = 50;
-  camera.translateX(camx);
-  camera.translateZ(-100);
-  camera.translateY(camy);
-  //  camera.lookAt(new THREE.Vector3(50.0,50.0,0.0)); // does not work with controls enabled
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.target = new THREE.Vector3(camx, camy, 0.0);
-  controls.update();
-}
-
-function initRenderer() {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("webgl2");
-  renderer = new THREE.WebGLRenderer({ canvas: canvas, context: context });
-  //  console.log(renderer.capabilities.isWebGL2);
-
-  renderer.setSize(WIDTH, HEIGHT);
-}
-
-async function initShapes() {
-  let matrixes = await (await fetch("/matrixes.json")).json();
-  let fishCount = matrixes.length;
-  const colors = new Float32Array(fishCount*3);
-  for (let i = 0; i < fishCount; i++) {
-    colors[i*3] = randFloat(0.2,0.6); 
-    colors[i*3+1] = randFloat(0.2,0.6); 
-    colors[i*3+1] = randFloat(0.2,0.7); 
+      // Output to screen
+      fragColor = vec4(col,1.0);
   }
-  const colorAttributes = new THREE.InstancedBufferAttribute(colors, 3);
 
-  const instancedFishses = await fish.createInstancedFish(
-    UNIFORMS,
-    fishCount 
-  );
-
-  for (var i = 0; i < matrixes.length; i++) {
-    const matrix = new THREE.Matrix4().identity();
-    let a = matrixes[i][0][0];
-    let c = matrixes[i][0][1];
-    let b = matrixes[i][1][0];
-    let d = matrixes[i][1][1];
-    let e = matrixes[i][2][0];
-    let f = matrixes[i][2][1];
-    matrix.set( a,b,0,e,
-                c,d,0,f,
-                0,0,1.0,0,
-                0,0,0,1.0); 
-
-    /*
-   */
-    instancedFishses.setMatrixAt(i, matrix);
+  void main() {
+    mainImage(gl_FragColor, gl_FragCoord.xy);
   }
-  instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
+  `;
+	const uniforms = {
+		iTime: { value: 0 },
+		iResolution: { value: new THREE.Vector3() },
+	};
+	const material = new THREE.ShaderMaterial( {
+		fragmentShader,
+		uniforms,
+	} );
+	scene.add( new THREE.Mesh( plane, material ) );
 
-  instancedFishses.instanceMatrix.needsUpdate = true;
-  scene.add(instancedFishses);
+	function resizeRendererToDisplaySize( renderer ) {
 
-//  const axesHelper = new THREE.AxesHelper(5);
-//  scene.add(axesHelper);
+		const canvas = renderer.domElement;
+		const width = canvas.clientWidth;
+		const height = canvas.clientHeight;
+		const needResize = canvas.width !== width || canvas.height !== height;
+		if ( needResize ) {
+
+			renderer.setSize( width, height, false );
+
+		}
+
+		return needResize;
+
+	}
+
+	function render( time ) {
+
+		time *= 0.001; // convert to seconds
+
+		resizeRendererToDisplaySize( renderer );
+
+		const canvas = renderer.domElement;
+		uniforms.iResolution.value.set( canvas.width, canvas.height, 1 );
+		uniforms.iTime.value = time;
+
+		renderer.render( scene, camera );
+
+		requestAnimationFrame( render );
+
+	}
+
+	requestAnimationFrame( render );
+
 }
 
-function render() {
-  requestAnimationFrame(render);
-  controls.update();
-  renderer.render(scene, camera);
-  //  UNIFORMS.time.value = 1.0;
-  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
-}
-
-init();
-render();
+main();
