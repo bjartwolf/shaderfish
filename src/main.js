@@ -22,34 +22,73 @@ function main() {
 
   uniform vec3 iResolution;
   uniform float iTime;
+  varying vec2 vUv;
 
-  // By iq: https://www.shadertoy.com/user/iq
-  // license: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      // Normalized pixel coordinates (from 0 to 1)
-      vec2 uv = fragCoord/iResolution.xy;
 
-      // Time varying pixel color
-	  //vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx+vec3(0,2,4));
+float distance_from_sphere(in vec3 p, in vec3 c, float r)
+{
+    return length(p - c) - r;
+}
 
-      vec3 col = 0.5 + 0.5*cos(iTime+uv.xyx*40.0+vec3(0,2,4));
+vec3 ray_march(in vec3 ro, in vec3 rd)
+{
+    float total_distance_traveled = 0.0;
+    const int NUMBER_OF_STEPS = 32;
+    const float MINIMUM_HIT_DISTANCE = 0.001;
+    const float MAXIMUM_TRACE_DISTANCE = 1000.0;
 
-      // Output to screen
-      fragColor = vec4(col,1.0);
-  }
+    for (int i = 0; i < NUMBER_OF_STEPS; ++i)
+    {
+        vec3 current_position = ro + total_distance_traveled * rd;
 
-  void main() {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
-  }
+        float distance_to_closest = distance_from_sphere(current_position, vec3(0.0), 1.0);
+
+        if (distance_to_closest < MINIMUM_HIT_DISTANCE) 
+        {
+            return vec3(1.0, 0.0, 0.0);
+        }
+
+        if (total_distance_traveled > MAXIMUM_TRACE_DISTANCE)
+        {
+            break;
+        }
+        total_distance_traveled += distance_to_closest;
+    }
+    return vec3(0.0);
+}
+
+void main()
+{
+    vec2 uv = vUv.st * 2.0 - 1.0;
+
+    vec3 camera_position = vec3(0.0, 0.0, -5.0);
+    vec3 ro = camera_position;
+    vec3 rd = vec3(uv, 1.0);
+
+    vec3 shaded_color = ray_march(ro, rd);
+
+    gl_FragColor  = vec4(shaded_color, 1.0);
+}
+
   `;
+  const vertexShader = `
+  
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+  }
+
+`;
+
 	const uniforms = {
 		iTime: { value: 0 },
 		iResolution: { value: new THREE.Vector3() },
 	};
 	const material = new THREE.ShaderMaterial( {
 		fragmentShader,
-		uniforms,
+		vertexShader,
+		uniforms
 	} );
 	scene.add( new THREE.Mesh( plane, material ) );
 
