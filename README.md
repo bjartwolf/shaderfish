@@ -1,35 +1,34 @@
 # shaderfish
+
 Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 
 # Run
+
 ## Install deps
+
 ```npm install```
 
-## Run 
+## Run
+
 ```npm run dev```
 
 # Resources
 
 On three.js:
-https://threejs.org/manual/
+<https://threejs.org/manual/>
 
-https://www.packtpub.com/product/learn-threejs-fourth-edition/9781803233871
+<https://michaelwalczyk.com/blog-ray-marching.html>
+
+<https://threejs.org/manual/#en/shadertoy>
+
+<https://www.packtpub.com/product/learn-threejs-fourth-edition/9781803233871>
 
 On threejs vertex shaders:
-https://github.com/mollerse/3d-visualization-workshop
+<https://github.com/mollerse/3d-visualization-workshop>
 
-On fish tesselations:
-https://github.com/einarwh/escher-workshop
-
-
-On fish with pixel shaders:
-http://roy.red/posts/building-eschers-square-limit/
-
-On tesselations:
-http://www.tess-elation.co.uk/self-similar-tessellations
-
-Book of shaders:
-https://thebookofshaders.com/
+ook of shaders:
+<https://thebookofshaders.com/>
 
 Book on designing tesselations:
-https://www.amazon.com/Designing-Tessellations-Secrets-Interlocking-Patterns/dp/0809228661j
+<https://www.amazon.com/Designing-Tessellations-Secrets-Interlocking-Patterns/dp/0809228661j>
+
