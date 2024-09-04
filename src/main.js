@@ -32,7 +32,7 @@ float distance_from_sphere(in vec3 p, in vec3 c, float r)
 
 float map_the_world(in vec3 p)
 {
-    float displacement = sin(5.0 * p.x) * sin(5.0 * p.y) * sin(5.0 * p.z) * 0.25;
+    float displacement = sin(15.0 * p.x*iTime) * sin(15.0 * p.y/iTime) * sin(5.0 * p.z) * 0.25;
     float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
 
     return sphere_0 + displacement;
@@ -41,7 +41,7 @@ float map_the_world(in vec3 p)
 
 vec3 calculate_normal(in vec3 p)
 {
-    const vec3 small_step = vec3(0.001, 0.0, 0.0);
+    const vec3 small_step = vec3(0.0001, 0.0, 0.0);
 
     float gradient_x = map_the_world(p + small_step.xyy) - map_the_world(p - small_step.xyy);
     float gradient_y = map_the_world(p + small_step.yxy) - map_the_world(p - small_step.yxy);
@@ -95,7 +95,7 @@ void main()
 {
     vec2 uv = vUv.st * 2.0 - 1.0;
 
-    vec3 camera_position = vec3(0.0, 0.0, -5.0);
+    vec3 camera_position = vec3(0.0, 0.0, -4.0);
     vec3 ro = camera_position;
     vec3 rd = vec3(uv, 1.0);
 
