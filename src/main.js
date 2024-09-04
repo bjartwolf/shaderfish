@@ -2,22 +2,22 @@ import * as THREE from "three";
 
 function main() {
 
-	const canvas = document.querySelector( '#c' );
-	const renderer = new THREE.WebGLRenderer( { antialias: true, canvas } );
-	renderer.autoClearColor = false;
+  const canvas = document.querySelector('#c');
+  const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+  renderer.autoClearColor = false;
 
-	const camera = new THREE.OrthographicCamera(
-		- 1, // left
-		1, // right
-		1, // top
-		- 1, // bottom
-		- 1, // near,
-		1, // far
-	);
-	const scene = new THREE.Scene();
-	const plane = new THREE.PlaneGeometry( 2, 2 );
+  const camera = new THREE.OrthographicCamera(
+    - 1, // left
+    1, // right
+    1, // top
+    - 1, // bottom
+    - 1, // near,
+    1, // far
+  );
+  const scene = new THREE.Scene();
+  const plane = new THREE.PlaneGeometry(2, 2);
 
-	const fragmentShader = `
+  const fragmentShader = `
   #include <common>
 
   uniform vec3 iResolution;
@@ -27,8 +27,32 @@ function main() {
 
 float distance_from_sphere(in vec3 p, in vec3 c, float r)
 {
-    return length(p - c) - r;
+    return length(p - c)- r;
 }
+
+float map_the_world(in vec3 p)
+{
+    float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
+
+    // Later we might have sphere_1, sphere_2, cube_3, etc...
+
+    return sphere_0;
+}
+
+
+vec3 calculate_normal(in vec3 p)
+{
+    const vec3 small_step = vec3(0.001, 0.0, 0.0);
+
+    float gradient_x = map_the_world(p + small_step.xyy) - map_the_world(p - small_step.xyy);
+    float gradient_y = map_the_world(p + small_step.yxy) - map_the_world(p - small_step.yxy);
+    float gradient_z = map_the_world(p + small_step.yyx) - map_the_world(p - small_step.yyx);
+
+    vec3 normal = vec3(gradient_x, gradient_y, gradient_z);
+
+    return normalize(normal);
+}
+
 
 vec3 ray_march(in vec3 ro, in vec3 rd)
 {
@@ -41,11 +65,17 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
     {
         vec3 current_position = ro + total_distance_traveled * rd;
 
-        float distance_to_closest = distance_from_sphere(current_position, vec3(0.0), 1.0);
+        float distance_to_closest = map_the_world(current_position);
 
         if (distance_to_closest < MINIMUM_HIT_DISTANCE) 
         {
-            return vec3(1.0, 0.0, 0.0);
+          vec3 normal = calculate_normal(current_position);
+
+          // Remember, each component of the normal will be in 
+          // the range -1..1, so for the purposes of visualizing
+          // it as an RGB color, let's remap it to the range
+          // 0..1
+          return normal * 0.5 + 0.5;
         }
 
         if (total_distance_traveled > MAXIMUM_TRACE_DISTANCE)
@@ -81,50 +111,50 @@ void main()
 
 `;
 
-	const uniforms = {
-		iTime: { value: 0 },
-		iResolution: { value: new THREE.Vector3() },
-	};
-	const material = new THREE.ShaderMaterial( {
-		fragmentShader,
-		vertexShader,
-		uniforms
-	} );
-	scene.add( new THREE.Mesh( plane, material ) );
+  const uniforms = {
+    iTime: { value: 0 },
+    iResolution: { value: new THREE.Vector3() },
+  };
+  const material = new THREE.ShaderMaterial({
+    fragmentShader,
+    vertexShader,
+    uniforms
+  });
+  scene.add(new THREE.Mesh(plane, material));
 
-	function resizeRendererToDisplaySize( renderer ) {
+  function resizeRendererToDisplaySize(renderer) {
 
-		const canvas = renderer.domElement;
-		const width = canvas.clientWidth;
-		const height = canvas.clientHeight;
-		const needResize = canvas.width !== width || canvas.height !== height;
-		if ( needResize ) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
 
-			renderer.setSize( width, height, false );
+      renderer.setSize(width, height, false);
 
-		}
+    }
 
-		return needResize;
+    return needResize;
 
-	}
+  }
 
-	function render( time ) {
+  function render(time) {
 
-		time *= 0.001; // convert to seconds
+    time *= 0.001; // convert to seconds
 
-		resizeRendererToDisplaySize( renderer );
+    resizeRendererToDisplaySize(renderer);
 
-		const canvas = renderer.domElement;
-		uniforms.iResolution.value.set( canvas.width, canvas.height, 1 );
-		uniforms.iTime.value = time;
+    const canvas = renderer.domElement;
+    uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
+    uniforms.iTime.value = time;
 
-		renderer.render( scene, camera );
+    renderer.render(scene, camera);
 
-		requestAnimationFrame( render );
+    requestAnimationFrame(render);
 
-	}
+  }
 
-	requestAnimationFrame( render );
+  requestAnimationFrame(render);
 
 }
 
