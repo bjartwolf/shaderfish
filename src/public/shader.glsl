@@ -34,7 +34,7 @@ vec3 calculate_normal(in vec3 p) {
 vec3 light_position = vec3(0.0, 0.0, -10.0);
 vec3 camera_position = vec3(0.0, 1.0, -4.0);
 
-vec3 ray_march(in vec3 ro, in vec3 rd) {
+vec3 ray_march(in vec3 ro, in vec3 ray_direction) {
   float total_distance_traveled = 0.0;
   const int NUMBER_OF_STEPS = 32;
   const float MINIMUM_HIT_DISTANCE = 0.001;
@@ -42,20 +42,20 @@ vec3 ray_march(in vec3 ro, in vec3 rd) {
 
   for (int i = 0; i < NUMBER_OF_STEPS; ++i)
   {
-    vec3 current_position = ro + total_distance_traveled * rd;
+    vec3 current_position = ro + total_distance_traveled * ray_direction;
 
     float distance_to_closest = map_the_world(current_position);
 
     if (distance_to_closest < MINIMUM_HIT_DISTANCE) {
       vec3 normal = calculate_normal(current_position);
 
-      // Calculate the unit direction vector that points from
-      // the point of intersection to the light source
+      // i flipped it
+      //vec3 direction_to_light = normalize(current_position - light_position);
       vec3 direction_to_light = normalize(light_position - current_position);
 
-      float diffuse_intensity = max(0.1, dot(normal, direction_to_light));
+      float diffuse_intensity = max(0.2, dot(normal, direction_to_light));
 
-      return (current_position.zxy+ 0.5)  * diffuse_intensity;
+      return (current_position.zxy+ 0.0)  * diffuse_intensity;
     }
 
     if (total_distance_traveled > MAXIMUM_TRACE_DISTANCE) {
@@ -70,10 +70,10 @@ vec3 ray_march(in vec3 ro, in vec3 rd) {
 void main() {
   vec2 uv = vUv.st * 2.0 - 1.0;
 
-  vec3 ro = camera_position;
-  vec3 rd = vec3(uv, 1.0);
+  vec3 ray_origin = camera_position;
+  vec3 ray_direction = vec3(uv, 1.0);
 
-  vec3 shaded_color = ray_march(ro, rd);
+  vec3 shaded_color = ray_march(ray_origin, ray_direction);
 
   gl_FragColor = vec4(shaded_color, 1.0);
 }

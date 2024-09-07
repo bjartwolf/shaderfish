@@ -17,8 +17,10 @@ Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 On three.js:
 <https://threejs.org/manual/>
 
+Ray marching
 <https://michaelwalczyk.com/blog-ray-marching.html>
 
+Fragment shaders in three js
 <https://threejs.org/manual/#en/shadertoy>
 
 <https://www.packtpub.com/product/learn-threejs-fourth-edition/9781803233871>
@@ -31,4 +33,3 @@ ook of shaders:
 
 Book on designing tesselations:
 <https://www.amazon.com/Designing-Tessellations-Secrets-Interlocking-Patterns/dp/0809228661j>
-
