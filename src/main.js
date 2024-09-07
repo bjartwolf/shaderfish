@@ -19,10 +19,7 @@ async function main() {
 
   async function loadShader() {
     const script = document.getElementById("fragment_shader");
-    console.log("FRAGMENT SHADER");
-    console.log(script);
     const response = await fetch(script.src);
-    console.log(response);
     return await response.text();
   }
   const fragmentShader = await loadShader();
@@ -60,27 +57,20 @@ async function main() {
     }
 
     return needResize;
-
   }
 
   function render(time) {
 
     time *= 0.001; // convert to seconds
-
     resizeRendererToDisplaySize(renderer);
-
     const canvas = renderer.domElement;
     uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
     uniforms.iTime.value = time;
 
     renderer.render(scene, camera);
-
     requestAnimationFrame(render);
-
   }
 
   requestAnimationFrame(render);
-
 }
-
 main();
