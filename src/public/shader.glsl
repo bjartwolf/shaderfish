@@ -7,12 +7,12 @@ varying vec2 vUv;
 float distance_from_sphere(in vec3 p, in vec3 c, float r) {
   return min(
     length(p - c)- r,
-    length(p-(c+vec3(-1.1,1.0,1.3)))-r
+    length(p-(c+vec3(-1.8,0.2,3.1)))-r
   );
 }
 
 float map_the_world(in vec3 p) {
-  float displacement = sin(1.0 * p.x*iTime) * sin(2.0 * p.y/iTime) * sin(1.0 * p.z) * 0.95;
+  float displacement = sin(1.0 * p.x*iTime) * sin(2.0 * p.y*1.0*iTime) * tan(1.0 * p.z) * 0.95;
   float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
 
   return sphere_0 + displacement;
@@ -68,6 +68,7 @@ vec3 ray_march(in vec3 ro, in vec3 ray_direction) {
 }
 
 void main() {
+  camera_position += iTime*0.01; 
   vec2 uv = vUv.st * 2.0 - 1.0;
 
   vec3 ray_origin = camera_position;
