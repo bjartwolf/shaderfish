@@ -53,9 +53,9 @@ vec3 ray_march(in vec3 ro, in vec3 ray_direction) {
       //vec3 direction_to_light = normalize(current_position - light_position);
       vec3 direction_to_light = normalize(light_position - current_position);
 
-      float diffuse_intensity = max(0.2, dot(normal, direction_to_light));
+      float diffuse_intensity = max(0.1, 2.0*dot(normal, direction_to_light));
 
-      return (current_position.zxy+ 0.0)  * diffuse_intensity;
+      return (current_position.yzx+ 0.1)  * diffuse_intensity;
     }
 
     if (total_distance_traveled > MAXIMUM_TRACE_DISTANCE) {
