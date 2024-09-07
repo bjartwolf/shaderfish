@@ -5,11 +5,14 @@ uniform float iTime;
 varying vec2 vUv;
 
 float distance_from_sphere(in vec3 p, in vec3 c, float r) {
-  return length(p - c)- r;
+  return min(
+    length(p - c)- r,
+    length(p-(c+vec3(-1.1,1.0,1.3)))-r
+  );
 }
 
 float map_the_world(in vec3 p) {
-  float displacement = sin(2.0 * p.x*iTime) * sin(4.0 * p.y/iTime) * sin(5.0 * p.z) * 0.25;
+  float displacement = sin(1.0 * p.x*iTime) * sin(2.0 * p.y/iTime) * sin(1.0 * p.z) * 0.95;
   float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
 
   return sphere_0 + displacement;
@@ -28,6 +31,9 @@ vec3 calculate_normal(in vec3 p) {
 }
 
 
+vec3 light_position = vec3(0.0, 0.0, -10.0);
+vec3 camera_position = vec3(0.0, 1.0, -4.0);
+
 vec3 ray_march(in vec3 ro, in vec3 rd) {
   float total_distance_traveled = 0.0;
   const int NUMBER_OF_STEPS = 32;
@@ -42,15 +48,14 @@ vec3 ray_march(in vec3 ro, in vec3 rd) {
 
     if (distance_to_closest < MINIMUM_HIT_DISTANCE) {
       vec3 normal = calculate_normal(current_position);
-      vec3 light_position = vec3(2.0, -5.0, 3.0);
 
       // Calculate the unit direction vector that points from
       // the point of intersection to the light source
-      vec3 direction_to_light = normalize(current_position - light_position);
+      vec3 direction_to_light = normalize(light_position - current_position);
 
       float diffuse_intensity = max(0.1, dot(normal, direction_to_light));
 
-      return (current_position.zxy + 0.5)  * diffuse_intensity;
+      return (current_position.zxy+ 0.5)  * diffuse_intensity;
     }
 
     if (total_distance_traveled > MAXIMUM_TRACE_DISTANCE) {
@@ -65,7 +70,6 @@ vec3 ray_march(in vec3 ro, in vec3 rd) {
 void main() {
   vec2 uv = vUv.st * 2.0 - 1.0;
 
-  vec3 camera_position = vec3(0.0, 0.0, -4.0);
   vec3 ro = camera_position;
   vec3 rd = vec3(uv, 1.0);
 
