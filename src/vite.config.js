@@ -1,8 +1,16 @@
+import { defineConfig } from 'vite'
+import FullReload from 'vite-plugin-full-reload'
+
 /** @type {import('vite').UserConfig} */
 export default {
-  assetsInclude: ['**/*.png', '**/*.glb'], 
+  plugins: [
+    FullReload(['**/*'])
+  ],
+  assetsInclude: ['**/*.png', '**/*.glb', '**/*.glsl'],
   build: {
     target: 'esnext'
   }
   // ...
 }
+
+
