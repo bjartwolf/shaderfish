@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ray marching</title>
+    <style>
+    #c {
+        height: 50%;
+        aspect-ratio: 1/1;
+        z-index: 1;
+        position: absolute;
+        background-color: transparent;
+    }
+    .view-container {
+      position: absolute;
+      top: 350px; 
+      left: 200px; 
+      width: 300px;
+      z-index: 1;
+    }
+       
+    </style>
+  </head>
+  <body>
+  <script id="fragment_shader" src="/task4.glsl" type="x-shader/x-fragment"></script>
+  <div>
+    <div class="view-container">
+      <h1> Assignment 4</h1>
+        Let us add some light.
+        We have to find normal vectors and stuff, luckily deriving the normal is 
+        not to hard with the surface function, we can just go a little bit along the distance function to see how the.
+        surface grows.  
+
+    </div>
+    <canvas id="c"></canvas>
+  </div>
+  </body>
+<script type="module" src="/main.js"></script>
+
+</html>
