@@ -9,11 +9,9 @@ float distance_from_sphere(in vec3 p, in vec3 c, float r) {
 }
 
 float map_the_world(in vec3 p) {
-  float sphere_0 = distance_from_sphere(p, vec3(5.0), 1.0);
+  float sphere_0 = distance_from_sphere(p, vec3(0.0,0.0,5.0), 2.0);
   return sphere_0;
 }
-
-vec3 camera_position = vec3(-1.0, 2.0, -6.0);
 
 vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
   float total_distance_traveled = 0.0;
@@ -40,8 +38,9 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
   return vec4(0.0);
 }
 
+vec3 camera_position = vec3(-1.0, 2.0, -6.0);
 void main() {
-  camera_position += 5.0*abs(sin(iTime*2.0));
+  //camera_position += 1.0*abs(sin(iTime*2.0));
   vec2 uv = vUv.st * 2.0 - 1.0;
 
   vec3 ray_origin = camera_position;
