@@ -14,6 +14,7 @@ export default {
         task1: resolve(__dirname, 'task1/index.html'),
         task2: resolve(__dirname, 'task2/index.html'),
         task3: resolve(__dirname, 'task3/index.html'),
+        task4: resolve(__dirname, 'task4/index.html'),
       }
     }
   }
