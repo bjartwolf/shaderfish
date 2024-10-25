@@ -1,5 +1,10 @@
 # shaderfish
 
+This started as a tesselation for fish using three.js, but somehow
+it turned into a workshop for fragment shaders and ray marching...
+
+Not sure how it happened.
+
 Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 
 # Run
@@ -11,6 +16,8 @@ Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 ## Run
 
 ```npm run dev```
+
+Just edit the shaders (the glsl files) and the results will reload automatically.
 
 # Resources
 
