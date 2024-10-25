@@ -3,19 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Ray marching task 2</title>
+    <title>Task 2</title>
     <style>
     #c {
-        height: 100%;
+        width: 500px;
         aspect-ratio: 1/1;
         z-index: 1;
         position: absolute;
         background-color: transparent;
     }
-    h1 {
+    .view-container {
       position: absolute;
-      top: 50%; 
-      left: 50%; 
+      width: 300px;
+      top: 200px; 
+      left: 150px; 
       z-index: 1;
     }
        
@@ -23,9 +24,18 @@
   </head>
   <body>
   <script id="fragment_shader" src="/task2.glsl" type="x-shader/x-fragment"></script>
+  <div>
   <div class="view-container">
     <h1> Assignment 2</h1>
-    <canvas id="c"></canvas>
+
+    In this task, we pick up the input iTime (which is sent from javascript, you
+        can have a look at the main.js file) in the shader and use that
+        as input.
+
+    Edit the file src/public/task2.glsl and observe the changes
+
+  </div>
+  <canvas id="c"></canvas>
   </div>
   </body>
 <script type="module" src="/main.js"></script>
