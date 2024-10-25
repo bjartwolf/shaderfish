@@ -28,7 +28,7 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
     float distance_to_closest = map_the_world(current_position);
 
     if (distance_to_closest < MINIMUM_HIT_DISTANCE) {
-      return vec4(1.0, 0.3,0.4,1.0);
+      return vec4(1.0, 0.3,0.4,0.8);
     }
 
     if (total_distance_traveled > MAXIMUM_TRACE_DISTANCE) {
