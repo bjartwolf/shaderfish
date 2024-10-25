@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Ray marching</title>
     <style>
-    html, body {
-        height: 100%;
-        margin: 0;
-    }
     #c {
-        width: auto; 
         height: 100%;
         aspect-ratio: 1/1;
-        display: block;
+        z-index: 1;
+        position: absolute;
+        background-color: transparent;
     }
+    h1 {
+      position: absolute;
+      top: 50%; 
+      left: 50%; 
+      z-index: 1;
+    }
+       
     </style>
   </head>
   <body>
   <script id="fragment_shader" src="/shader.glsl" type="x-shader/x-fragment"></script>
-  <canvas id="c"></canvas>
+  <div class="view-container">
+    <h1> Assignement 1</h1>
+    <canvas id="c"></canvas>
+  </div>
   </body>
 <script type="module" src="/main.js"></script>
 
