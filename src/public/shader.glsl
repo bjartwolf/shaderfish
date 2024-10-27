@@ -64,6 +64,7 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
 }
 
 void main() {
+  camera_position += sin(2.0*iTime); 
   vec2 uv = vUv.st * 2.0 - 1.0;
 
   vec3 ray_origin = camera_position;
