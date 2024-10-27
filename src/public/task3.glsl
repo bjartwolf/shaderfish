@@ -1,5 +1,4 @@
-#include <common>
-
+precision highp float;
 uniform vec3 iResolution;
 uniform float iTime;
 varying vec2 vUv;

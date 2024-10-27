@@ -1,5 +1,4 @@
-#include <common>
-
+precision highp float;
 uniform vec3 iResolution;
 uniform float iTime;
 varying vec2 vUv;
@@ -29,7 +28,7 @@ vec3 calculate_normal(in vec3 p) {
 
 
 vec3 light_position = vec3(0.0, 0.0, -10.0);
-vec3 camera_position = vec3(0.0, 1.0, -4.0);
+vec3 camera_position = vec3(0.0, 0.0, -4.0);
 
 vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
   float total_distance_traveled = 0.0;
@@ -65,7 +64,6 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
 }
 
 void main() {
-  camera_position += sin(2.0*iTime); 
   vec2 uv = vUv.st * 2.0 - 1.0;
 
   vec3 ray_origin = camera_position;
