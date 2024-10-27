@@ -10,15 +10,25 @@ uniform sampler2D uNoise;
 in vec2 vUv;
 out vec4 fragColor;  
 
-float noise(vec3 x ) {
-  vec3 p = floor(x);
-  vec3 f = fract(x);
-  f = f*f*(3.0-2.0*f);
+float hash( float n )
+{
+    return fract(sin(n)*43758.5453);
+}
 
-  vec2 uv = (p.xy+vec2(37.0,239.0)*p.z) + f.xy;
-  vec2 tex = textureLod(uNoise,(uv+0.5)/256.0,0.0).yx;
+float noise( in vec3 x )
+{
+    vec3 p = floor(x);
+    vec3 f = fract(x);
 
-  return mix( tex.x, tex.y, f.z ) * 2.0 - 1.0;
+    f = f*f*(3.0-2.0*f);
+
+    float n = p.x + p.y*57.0 + 113.0*p.z;
+
+    float res = mix(mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),
+                        mix( hash(n+ 57.0), hash(n+ 58.0),f.x),f.y),
+                    mix(mix( hash(n+113.0), hash(n+114.0),f.x),
+                        mix( hash(n+170.0), hash(n+171.0),f.x),f.y),f.z);
+    return res;
 }
 
 float fbm(vec3 p) {
