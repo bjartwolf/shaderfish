@@ -5,7 +5,7 @@
 precision highp float;
 
 in vec3 iResolution;
-in float iTime;
+uniform float iTime;
 uniform sampler2D uNoise;
 in vec2 vUv;
 out vec4 fragColor;  
@@ -50,9 +50,9 @@ vec3 camera_position = vec3(0.0, 1.0, -4.0);
 
 float map_the_world(in vec3 p) {
   // negative distance, we want to know we are inside the sphere
-  float sphere_0 = -distance_from_sphere(p, vec3(0.0), 1.0);
+  float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
 
-  return sphere_0 + fbm(p); // adding noise to the density
+  return - sphere_0 + fbm(p); // adding noise to the density
 }
 
 
@@ -61,8 +61,6 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
   const float MARCH_SIZE = 0.08; // fixed step size
 
   const int NUMBER_OF_STEPS = 100; // we now do fixed steps and fixed iterations
-  const float MINIMUM_HIT_DISTANCE = 0.001;
-  const float MAXIMUM_TRACE_DISTANCE = 1000.0;
   vec4 res = vec4(0.0);
 
   float total_distance_traveled = 0.0;

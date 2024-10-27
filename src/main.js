@@ -12,13 +12,11 @@ async function main() {
 precision mediump float;
 
 in vec4 a_position;
-out float iTime;
 out vec2 vUv;
 
 void main() {
     vUv = a_position.xy * 0.5 + 0.5;
     gl_Position = a_position;
-    iTime = 0.0; 
 }
   `;
 
@@ -112,7 +110,6 @@ void main() {
   // Bind the texture to texture unit 0
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, noiseTexture);
-  gl.uniform1i(uNoiseLocation, 0);  // Tell WebGL to use texture unit 0 for uNoise
 
   // Create buffer
   const positionBuffer = gl.createBuffer();
