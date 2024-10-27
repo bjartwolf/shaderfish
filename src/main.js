@@ -1,6 +1,6 @@
 async function main() {
   const canvas = document.querySelector('#c');
-  const gl = canvas.getContext('webgl');
+  const gl = canvas.getContext('webgl2');
 
   if (!gl) {
     console.error('WebGL not supported');
@@ -8,13 +8,18 @@ async function main() {
   }
 
   // Vertex shader program
-  const vertexShaderSource = `
-    attribute vec4 a_position;
-    varying vec2 vUv;
-    void main() {
-      vUv = a_position.xy * 0.5 + 0.5;
-      gl_Position = a_position;
-    }
+  const vertexShaderSource = `#version 300 es
+precision mediump float;
+
+in vec4 a_position;
+out float iTime;
+out vec2 vUv;
+
+void main() {
+    vUv = a_position.xy * 0.5 + 0.5;
+    gl_Position = a_position;
+    iTime = 0.0; 
+}
   `;
 
   // Fragment shader program
@@ -23,7 +28,45 @@ async function main() {
     const response = await fetch(script.src);
     return await response.text();
   }
+  const loadTexture = (gl, url) => {
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
 
+    // Set temporary texture while the image is loading
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      1,
+      1,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      new Uint8Array([0, 0, 255, 255]) // Temporary blue pixel
+    );
+
+    // Load image
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = url;
+    image.onload = () => {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+      // Set texture parameters
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+      // Generate Mipmaps
+      gl.generateMipmap(gl.TEXTURE_2D);
+    };
+
+    return texture;
+  };
+
+  //  https://cdn.maximeheckel.com/noises/noise2.png
   // Create shaders
   function createShader(gl, type, source) {
     const shader = gl.createShader(type);
@@ -46,7 +89,6 @@ async function main() {
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
-    console.log(fragmentShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
@@ -63,6 +105,14 @@ async function main() {
   const positionLocation = gl.getAttribLocation(program, 'a_position');
   const resolutionLocation = gl.getUniformLocation(program, 'iResolution');
   const timeLocation = gl.getUniformLocation(program, 'iTime');
+
+  const noiseTexture = loadTexture(gl, "https://cdn.maximeheckel.com/noises/noise2.png");
+  const uNoiseLocation = gl.getUniformLocation(program, "uNoise");
+
+  // Bind the texture to texture unit 0
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, noiseTexture);
+  gl.uniform1i(uNoiseLocation, 0);  // Tell WebGL to use texture unit 0 for uNoise
 
   // Create buffer
   const positionBuffer = gl.createBuffer();
@@ -102,6 +152,7 @@ async function main() {
 
     gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
     gl.uniform1f(timeLocation, time);
+
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
