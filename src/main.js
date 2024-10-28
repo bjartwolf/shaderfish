@@ -1,6 +1,8 @@
+// https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
   const canvas = document.querySelector('#c');
-  const gl = canvas.getContext('webgl');
+  const gl = canvas.getContext('webgl2', { antialias: true }, "true");
+  //const gl = canvas.getContext('webgl2', { antialias: true }, "true");
 
   if (!gl) {
     console.error('WebGL not supported');
@@ -8,13 +10,16 @@ async function main() {
   }
 
   // Vertex shader program
-  const vertexShaderSource = `
-    attribute vec4 a_position;
-    varying vec2 vUv;
-    void main() {
-      vUv = a_position.xy * 0.5 + 0.5;
-      gl_Position = a_position;
-    }
+  const vertexShaderSource = `#version 300 es 
+precision highp float;
+
+in vec4 position;
+out vec2 vUv;
+
+void main() {
+    vUv = position.xy;
+    gl_Position = position; 
+  }
   `;
 
   // Fragment shader program
@@ -24,7 +29,7 @@ async function main() {
     return await response.text();
   }
 
-  // Create shaders
+  //  https://cdn.maximeheckel.com/noises/noise2.png
   function createShader(gl, type, source) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
@@ -37,16 +42,12 @@ async function main() {
     return shader;
   }
 
-
-  // Create program
   async function createProgram(gl) {
     const fragmentShaderSource = await loadShader();
-    console.log(fragmentShaderSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
-    console.log(fragmentShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
@@ -60,7 +61,7 @@ async function main() {
   const program = await createProgram(gl);
 
   // Look up locations
-  const positionLocation = gl.getAttribLocation(program, 'a_position');
+  const positionLocation = gl.getAttribLocation(program, 'position');
   const resolutionLocation = gl.getUniformLocation(program, 'iResolution');
   const timeLocation = gl.getUniformLocation(program, 'iTime');
 
@@ -87,9 +88,8 @@ async function main() {
   }
 
   function render(time) {
-    time *= 0.001; // convert to seconds
-
-    resizeCanvasToDisplaySize(canvas);
+    resizeCanvasToDisplaySize(gl.canvas);
+    time *= 0.001;
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -112,4 +112,3 @@ async function main() {
 }
 
 main();
-

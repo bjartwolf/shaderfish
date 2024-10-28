@@ -1,7 +1,10 @@
+#version 300 es 
+
 precision highp float;
 uniform vec3 iResolution;
 uniform float iTime;
-varying vec2 vUv;
+in vec2 vUv;
+out vec4 fragColor;
 
 float distance_from_sphere(in vec3 p, in vec3 c, float r) {
   return length(p - c) - r;
@@ -47,5 +50,5 @@ void main() {
 
   vec4 shaded_color = ray_march(ray_origin, ray_direction);
 
-  gl_FragColor = shaded_color;
+  fragColor = shaded_color;
 }

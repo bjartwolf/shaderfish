@@ -1,7 +1,8 @@
+#version 300 es 
 precision highp float;
-uniform vec3 iResolution;
 uniform float iTime;
-varying vec2 vUv;
+in vec2 vUv;
+out vec4 fragColor;  
 
 float distance_from_spheres(in vec3 p, in vec3 c, float r) {
   return min(
@@ -33,8 +34,8 @@ vec3 camera_position = vec3(0.0, 0.0, -4.0);
 vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
   float total_distance_traveled = 0.0;
   const int NUMBER_OF_STEPS = 32;
-  const float MINIMUM_HIT_DISTANCE = 0.001;
-  const float MAXIMUM_TRACE_DISTANCE = 1000.0;
+  const float MINIMUM_HIT_DISTANCE = 0.0001;
+  const float MAXIMUM_TRACE_DISTANCE = 100.0;
 
   for (int i = 0; i < NUMBER_OF_STEPS; ++i)
   {
@@ -65,10 +66,10 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
 
 void main() {
   camera_position += sin(2.0*iTime); 
-  vec2 uv = vUv.st * 2.0 - 1.0;
+  vec2 uv = vUv.st;
 
   vec3 ray_origin = camera_position;
   vec3 ray_direction = vec3(uv, 1.0);
 
-  gl_FragColor = ray_march(ray_origin, ray_direction);
+  fragColor = ray_march(ray_origin, ray_direction);
 }

@@ -1,5 +1,7 @@
+#version 300 es 
 precision highp float;
 varying vec2 vUv;
+out vec4 fragColor;
 
 void main() {
   // Normalized pixel coordinates (from 0 to 1)
@@ -11,6 +13,6 @@ void main() {
   // indexing with multiple like uv.xy gives two components etc
   // glsl is really good at working with vectors
 
-  gl_FragColor = vec4(uv.x, uv.y, 0.5, 0.5);
+  fragColor = vec4(uv.x, uv.y, 0.5, 0.5);
   //gl_FragColor = vec4(sin(uv.xy*5.0), 0.5, 0.5);
 }
