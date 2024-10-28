@@ -10,29 +10,34 @@ uniform sampler2D uNoise;
 in vec2 vUv;
 out vec4 fragColor;  
 
-float hash( float n )
-{
-    return fract(sin(n)*43758.5453);
+#define MAX_STEPS 70
+
+float sdSphere(vec3 p, float radius) {
+  return length(p) - radius;
 }
+// https://www.thefrontdev.co.uk/real-time-volumetric-clouds-glsl-and-three
+float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+vec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}
 
-float noise( in vec3 x )
-{
-    vec3 p = floor(x);
-    vec3 f = fract(x);
-
-    f = f*f*(3.0-2.0*f);
-
-    float n = p.x + p.y*57.0 + 113.0*p.z;
-
-    float res = mix(mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),
-                        mix( hash(n+ 57.0), hash(n+ 58.0),f.x),f.y),
-                    mix(mix( hash(n+113.0), hash(n+114.0),f.x),
-                        mix( hash(n+170.0), hash(n+171.0),f.x),f.y),f.z);
-    return res;
+float noise(vec3 p){
+    vec3 a = floor(p);
+    vec3 d = p - a;
+    d = d * d * (3.0 - 2.0 * d);
+    vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
+    vec4 k1 = perm(b.xyxy);
+    vec4 k2 = perm(k1.xyxy + b.zzww);
+    vec4 c = k2 + a.zzzz;
+    vec4 k3 = perm(c);
+    vec4 k4 = perm(c + 1.0);
+    vec4 o1 = fract(k3 * (1.0 / 41.0));
+    vec4 o2 = fract(k4 * (1.0 / 41.0));
+    vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+    vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+    return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
 float fbm(vec3 p) {
-//  vec3 q = p + 2.28 * vec3(1.0, -0.2, -1.0);
   vec3 q = p + iTime * 0.5 * vec3(1.0, -0.2, -1.0);
   float g = noise(q);
 
@@ -50,60 +55,49 @@ float fbm(vec3 p) {
   return f;
 }
 
+float scene(vec3 p) {
+  float distance = sdSphere(p, 1.0);
 
-float distance_from_sphere(in vec3 p, in vec3 c, float r) {
-  return length(p- c)- r;
-}
-// https://registry.khronos.org/OpenGL-Refpages/gl4/html/textureLod.xhtml
-// this is actually a glsl funciton 
+  float f = fbm(p);
 
-vec3 camera_position = vec3(0.0, 0.0, 5.0);
-
-float map_the_world(in vec3 p) {
-  // negative distance, we want to know we are inside the sphere
-  float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
-
-  return (- sphere_0) + fbm(p);
+  return -distance + f;
 }
 
+const float MARCH_SIZE = 0.08;
 
-vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
-  const float MARCH_SIZE = 0.08; // fixed step size
-
-  const int NUMBER_OF_STEPS = 100; // we now do fixed steps and fixed iterations
+vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
+  float depth = 0.0;
+  vec3 p = rayOrigin + depth * rayDirection;
+  
   vec4 res = vec4(0.0);
 
-  float depth = 0.0;
-  vec3 current_position = ro + depth * ray_direction;
-  for (int i = 0; i < NUMBER_OF_STEPS; i++)
-  {
-    float density = map_the_world(current_position);
+  for (int i = 0; i < MAX_STEPS; i++) {
+    float density = scene(p);
+
+    // We only draw the density if it's greater than 0
     if (density > 0.0) {
-      // mix is linear interpolation
-      // https://registry.khronos.org/OpenGL-Refpages/gl4/html/mix.xhtml
       vec4 color = vec4(mix(vec3(1.0,1.0,1.0), vec3(0.0, 0.0, 0.0), density), density );
       color.rgb *= color.a;
-      // 1 - res.a is the opposite of the current alpha so far
-      // so the darker we are the less we add. sort of like 
-      // the light dissapearing as we enter it in the same direction we are walking
-      res += color * (1.0 - res.a);
+      res += color*(1.0-res.a);
     }
+
     depth += MARCH_SIZE;
-    current_position = ro + depth * ray_direction;
+    p = rayOrigin + depth * rayDirection;
   }
 
-  return res; 
+  return res;
 }
 
 void main() {
 
-  vec2 uv = vUv.xy*0.5;//iResolution.xy;
+    vec2 uv = vUv.xy*.5;///iResolution.xy;
 
+    vec3 ro = vec3(0.0, 0.0, 5.0);
+    vec3 ray_direction = normalize(vec3(uv, -1.0));
+//    vec2 tex = textureLod(uNoise,uv,0.0).yx;
+  //  fragColor = (vec4(tex, 0.0, 1.0));
+   // fragColor = vec4(uv, 0.0, 1.0);
 
-  vec3 ray_origin = camera_position;
-  vec3 ray_direction = normalize(vec3(uv, -1.0));
-
-  //fragColor = textureLod(uNoise,uv*5.0,1.0);
-  fragColor = vec4(ray_march(ray_origin, ray_direction).rgb, 1.0);
+    fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
 
 }
