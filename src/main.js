@@ -78,7 +78,17 @@ void main() {
   ];
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
+  function resizeCanvasToDisplaySize(canvas) {
+    const displayWidth = canvas.clientWidth;
+    const displayHeight = canvas.clientHeight;
+    if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+    }
+  }
+
   function render(time) {
+    resizeCanvasToDisplaySize(gl.canvas);
     time *= 0.001;
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
