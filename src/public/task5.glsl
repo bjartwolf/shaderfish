@@ -1,12 +1,10 @@
 #version 300 es 
 // based on 
 // https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/
-// 
 precision highp float;
 
 uniform vec2 iResolution;
 uniform float iTime;
-uniform sampler2D uNoise;
 in vec2 vUv;
 out vec4 fragColor;  
 
@@ -15,7 +13,6 @@ out vec4 fragColor;
 float sdSphere(vec3 p, float radius) {
   return length(p) - radius;
 }
-// https://www.thefrontdev.co.uk/real-time-volumetric-clouds-glsl-and-three
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}
@@ -74,7 +71,6 @@ vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
   for (int i = 0; i < MAX_STEPS; i++) {
     float density = scene(p);
 
-    // We only draw the density if it's greater than 0
     if (density > 0.0) {
       vec4 color = vec4(mix(vec3(1.0,1.0,1.0), vec3(0.0, 0.0, 0.0), density), density );
       color.rgb *= color.a;
@@ -89,15 +85,10 @@ vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
 }
 
 void main() {
-
-    vec2 uv = vUv.xy*.5;///iResolution.xy;
+    vec2 uv = vUv.xy;
 
     vec3 ro = vec3(0.0, 0.0, 5.0);
     vec3 ray_direction = normalize(vec3(uv, -1.0));
-//    vec2 tex = textureLod(uNoise,uv,0.0).yx;
-  //  fragColor = (vec4(tex, 0.0, 1.0));
-   // fragColor = vec4(uv, 0.0, 1.0);
 
     fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
-
 }
