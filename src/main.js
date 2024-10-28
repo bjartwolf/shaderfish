@@ -11,7 +11,7 @@ async function main() {
 
   // Vertex shader program
   const vertexShaderSource = `#version 300 es 
-precision mediump float;
+precision highp float;
 
 in vec4 position;
 out vec2 vUv;

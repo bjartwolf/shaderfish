@@ -90,5 +90,7 @@ void main() {
     vec3 ro = vec3(0.0, 0.0, 5.0);
     vec3 ray_direction = normalize(vec3(uv, -1.0));
 
+//    vec3 foo = vec3(fbm(ray_direction));
+//    fragColor = vec4(foo, 1.0);
     fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
 }
