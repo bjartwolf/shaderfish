@@ -34,7 +34,7 @@ vec3 camera_position = vec3(0.0, 0.0, -4.0);
 vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
   float total_distance_traveled = 0.0;
   const int NUMBER_OF_STEPS = 32;
-  const float MINIMUM_HIT_DISTANCE = 0.001;
+  const float MINIMUM_HIT_DISTANCE = 0.0001;
   const float MAXIMUM_TRACE_DISTANCE = 100.0;
 
   for (int i = 0; i < NUMBER_OF_STEPS; ++i)
@@ -65,7 +65,7 @@ vec4 ray_march(in vec3 ro, in vec3 ray_direction) {
 }
 
 void main() {
-//  camera_position += sin(2.0*iTime); 
+  camera_position += sin(2.0*iTime); 
   vec2 uv = vUv.st;
 
   vec3 ray_origin = camera_position;

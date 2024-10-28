@@ -1,7 +1,7 @@
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
   const canvas = document.querySelector('#c');
-  const gl = canvas.getContext('webgl2', { antialias: false }, "true");
+  const gl = canvas.getContext('webgl2', { antialias: true }, "true");
   //const gl = canvas.getContext('webgl2', { antialias: true }, "true");
 
   if (!gl) {
