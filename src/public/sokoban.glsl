@@ -61,6 +61,7 @@ void main() {
     int row = int(floor(uv.y * 8.0)); 
     int i = 8 * row + col; 
     if (boardstate[i] == 1) {
+      float boardSize = 8.0; 
       float nrOfPictureRows = 3.0;
       float nrOfColumnRows = 2.0;
       float pictureRow = 1.0; // cat
@@ -78,7 +79,7 @@ void main() {
       float mapX = remX*3.0;
       float mapY = 1.0 - (remY*nrOfPictureRows + pictureRow)/nrOfPictureRows;
       
-      fragColor = textureLod(u_texture, vec2(mapX+uv.x/8.0, mapY+uv.y/8.0 ), 0.0);
+      fragColor = textureLod(u_texture, vec2(uv.x/nrOfColumnRows*boardSize, uv.y/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows), 0.0);
       //fragColor = vec4(1.0, 0.0, 0.0, 1.0);
     } else {
       fragColor = vec4(0.0, 1.0, 0.0, 1.0);
