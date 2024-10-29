@@ -21,6 +21,30 @@ void main() {
   }
   `;
 
+  function loadTexture(gl, program) {
+    const imageTextureElement = document.getElementById("texture");
+    if (imageTextureElement) {
+      console.log("found image", imageTextureElement.src);
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageTextureElement);
+      const textureUniformLocation = gl.getUniformLocation(program, "u_texture");
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.uniform1i(textureUniformLocation, 0);  // Tell WebGL to use texture unit 0 for uNoise
+
+    } else {
+      console.log("No image texture found, most shaders here do not use them");
+      return "";
+    }
+  }
+
   // Fragment shader program
   async function loadShader() {
     const script = document.getElementById("fragment_shader");
@@ -43,6 +67,7 @@ void main() {
 
   async function createProgram(gl) {
     const fragmentShaderSource = await loadShader();
+
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const program = gl.createProgram();
@@ -54,6 +79,7 @@ void main() {
       gl.deleteProgram(program);
       return null;
     }
+    loadTexture(gl, program);
     return program;
   }
 
