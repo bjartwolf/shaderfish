@@ -14,7 +14,7 @@ void main() {
     uv *= 0.5; 
 //    uv.x *= iResolution.x / iResolution.y;
 
-    fragColor = textureLod(u_texture, uv, 0.0);
+    fragColor = textureLod(u_texture, vec2(uv.x, 1.0-uv.y ), 0.0);
 
 //    fragColor = vec4(uv.x,uv.y,0.0,1.0); 
 }
