@@ -54,6 +54,7 @@ void main() {
     uv += 1.0; 
     uv *= 0.5; 
     uv += 0.1*fbm(vec3(uv,0.0)) - 0.05;
+    uv.y = 1.0 - uv.y; 
 //    uv.x *= iResolution.x / iResolution.y;
     
     // figure out which col and row we are in, really
@@ -66,20 +67,11 @@ void main() {
       float nrOfColumnRows = 2.0;
       float pictureRow = 1.0; // cat
       float pictureCol= 0.0; // cat
-      float y1 = float(row)/8.0; 
-      float y2 = float(row+1)/8.0; 
-      float deltaY = y2 - y1;
-      float x1 = float(col)/8.0; 
-      float x2 = float(col+1)/8.0; 
-      float deltaX = x2 - x1;
-      // remainder of x, how far into the sprite
 
-      float remX = uv.x - x1; 
-      float remY = uv.y - y1;
-      float mapX = remX*3.0;
-      float mapY = 1.0 - (remY*nrOfPictureRows + pictureRow)/nrOfPictureRows;
+      float mapX = (uv.x-(float(col)/8.0))/nrOfColumnRows*boardSize;
+      float mapY = (uv.y-(float(row)/8.0))/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows;
       
-      fragColor = textureLod(u_texture, vec2(uv.x/nrOfColumnRows*boardSize, uv.y/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows), 0.0);
+      fragColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);
       //fragColor = vec4(1.0, 0.0, 0.0, 1.0);
     } else {
       fragColor = vec4(0.0, 1.0, 0.0, 1.0);
