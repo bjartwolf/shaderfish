@@ -68,18 +68,34 @@ void main() {
   async function createProgram(gl) {
     const fragmentShaderSource = await loadShader();
 
+    const boardState = new Int32Array(64);
+    boardState[0] = 1; // for now this means cat in position x = 3
+    boardState[3] = 1; // for now this means cat in position x = 3
+    boardState[13] = 1; // for now this means cat in position x = 3
+    boardState[53] = 1; // for now this means cat in position x = 3
+    boardState[63] = 1; // for now this means cat in position x = 3
+
+
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    gl.useProgram(program);
+
+    // hardcoded here and in shader to 8x8 = 64, maybe not bother with larger , has to be something with 16 in shader size...
+
+
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Error linking program:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
       return null;
     }
     loadTexture(gl, program);
+    const gameStateLocation = gl.getUniformLocation(program, 'boardstate');
+    gl.uniform1iv(gameStateLocation, boardState);
     return program;
   }
 
@@ -125,6 +141,8 @@ void main() {
 
     gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
     gl.uniform1f(timeLocation, time);
+
+
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 

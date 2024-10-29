@@ -7,6 +7,7 @@ uniform vec2 iResolution;
 uniform float iTime;
 in vec2 vUv;
 out vec4 fragColor;
+uniform int boardstate[64];
 
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
@@ -52,17 +53,19 @@ void main() {
     vec2 uv = vUv.xy;
     uv += 1.0; 
     uv *= 0.5; 
-    uv += 0.1*fbm(vec3(uv,0.0));
+    uv += 0.1*fbm(vec3(uv,0.0)) - 0.05;
 //    uv.x *= iResolution.x / iResolution.y;
     
+    // figure out which col and row we are in, really
+    int col = int(floor(uv.x * 8.0)); 
+    int row = int(floor(uv.y * 8.0)); 
 
-    if (uv.x >= 0.0 && uv.x <= 0.5 && uv.y >= 0.33333 && uv.y <= 0.66666) {
-      
-      fragColor = textureLod(u_texture, vec2(uv.x, 1.0-uv.y ), 0.0);
+    int i = 8 * row + col; 
+    if (boardstate[i] == 1) {
+      fragColor = vec4(1.0, 0.0, 0.0, 1.0);
     } else {
-        fragColor = vec4(0.0);
+      fragColor = vec4(0.0, 1.0, 0.0, 1.0);
     }
-
-  //    fragColor = vec4(0.0);
+//          fragColor = textureLod(u_texture, vec2(uv.x, 1.0-uv.y ), 0.0);
   //    fragColor = vec4(uv.x,uv.y,0.0,1.0); 
 }
