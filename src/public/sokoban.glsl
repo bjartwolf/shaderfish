@@ -81,11 +81,11 @@ void main() {
       pictureRow = 1.0; // nøste 
       pictureCol= 1.0; //
     } else if (boardstate[i] == 4) {
-      pictureRow = 0.0; // emptygoal 
-      pictureCol= 3.0; //
+      pictureRow = 2.0; // emptygoal 
+      pictureCol= 0.0; //
     } else if (boardstate[i] == 5) {
-      pictureRow = 1.0; // goal 
-      pictureCol= 3.0; //
+      pictureRow = 2.0; // goal 
+      pictureCol= 1.0; //
     }
   
     float mapX = (uv.x-(float(col)/8.0))/nrOfColumns*boardSize + pictureCol/nrOfColumns;

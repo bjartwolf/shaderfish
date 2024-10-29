@@ -83,16 +83,17 @@ void main() {
     boardState[31] = 1;
     boardState[39] = 1;
     boardState[47] = 1;
-    boardState[55] = 1;
     boardState[16] = 1;
     boardState[24] = 1;
     boardState[32] = 1;
     boardState[40] = 1;
     boardState[48] = 1;
-    boardState[56] = 1;
     boardState[13] = 1;
+
     boardState[52] = 1;
     boardState[53] = 1;
+    boardState[55] = 1;
+    boardState[56] = 1;
     boardState[57] = 1;
     boardState[58] = 1;
     boardState[59] = 1;
@@ -102,9 +103,10 @@ void main() {
     boardState[63] = 1;
 
     boardState[17] = 2;
-    boardState[19] = 3;
-    boardState[38] = 4;
-    boardState[39] = 4;
+    boardState[28] = 2;
+    boardState[29] = 3;
+    boardState[30] = 4;
+    boardState[25] = 4;
     boardState[18] = 5;
     boardState[41] = 5;
 
