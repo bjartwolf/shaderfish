@@ -20,6 +20,8 @@ Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 Just edit the shaders (the glsl files) and the results will reload automatically.
 
 # Resources
+On volumetric ray marching and ray marching in general:
+<https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/>
 
 On three.js:
 <https://threejs.org/manual/>
