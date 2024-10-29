@@ -42,3 +42,6 @@ ook of shaders:
 
 Book on designing tesselations:
 <https://www.amazon.com/Designing-Tessellations-Secrets-Interlocking-Patterns/dp/0809228661j>
+
+The shader god
+<https://iquilezles.org/>
