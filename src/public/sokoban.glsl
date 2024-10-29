@@ -13,8 +13,15 @@ void main() {
     uv += 1.0; 
     uv *= 0.5; 
 //    uv.x *= iResolution.x / iResolution.y;
+    
 
-    fragColor = textureLod(u_texture, vec2(uv.x, 1.0-uv.y ), 0.0);
+    if (uv.x >= 0.0 && uv.x <= 0.5 && uv.y >= 0.33333 && uv.y <= 0.66666) {
+      
+      fragColor = textureLod(u_texture, vec2(uv.x, 1.0-uv.y ), 0.0);
+    } else {
+        fragColor = vec4(0.0);
+    }
 
-//    fragColor = vec4(uv.x,uv.y,0.0,1.0); 
+  //    fragColor = vec4(0.0);
+  //    fragColor = vec4(uv.x,uv.y,0.0,1.0); 
 }
