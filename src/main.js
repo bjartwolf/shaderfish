@@ -2,7 +2,6 @@
 async function main() {
   const canvas = document.querySelector('#c');
   const gl = canvas.getContext('webgl2', { antialias: true }, "true");
-  //const gl = canvas.getContext('webgl2', { antialias: true }, "true");
 
   if (!gl) {
     console.error('WebGL not supported');
@@ -60,12 +59,10 @@ void main() {
 
   const program = await createProgram(gl);
 
-  // Look up locations
   const positionLocation = gl.getAttribLocation(program, 'position');
   const resolutionLocation = gl.getUniformLocation(program, 'iResolution');
   const timeLocation = gl.getUniformLocation(program, 'iTime');
 
-  // Create buffer
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   const positions = [

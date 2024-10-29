@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ray marching</title>
+    <style>
+    #c {
+        height: 850px;
+        aspect-ratio: 1/1;
+        z-index: 1;
+        position: absolute;
+        background-color: black;
+      
+    }
+    .view-container {
+      position: absolute;
+      top: 350px; 
+      left: 200px; 
+      width: 300px;
+      z-index: 1;
+    }
+       
+    </style>
+  </head>
+  <body>
+  <script id="fragment_shader" src="/task6.glsl" type="x-shader/x-fragment"></script>
+  <div>
+    <div class="view-container">
+      <h1> Assignment 5</h1>
+        Cloud playground
+
+    </div>
+    <canvas id="c"></canvas>
+  </div>
+  </body>
+<script type="module" src="/main.js"></script>
+
+</html>

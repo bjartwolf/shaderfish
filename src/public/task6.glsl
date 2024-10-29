@@ -9,6 +9,7 @@ in vec2 vUv;
 out vec4 fragColor;
 
 #define MAX_STEPS 70
+#define EPSILON 0.01
 
 float sdSphere(vec3 p, float radius) {
   return length(p) - radius;
@@ -60,8 +61,21 @@ float scene(vec3 p) {
   return -distance + f;
 }
 
-const float MARCH_SIZE = 0.08;
+vec3 getNormal(vec3 p) {
+  // a small unit vector to use as a basis to create the others
+  vec2 e = vec2(EPSILON, 0.0);
 
+  vec3 delta_x = e.xyy;
+  vec3 delta_y = e.yxy;
+  vec3 delta_z = e.yyx;
+  vec3 n = scene(p) - vec3( scene(p-delta_x), scene(p-delta_y), scene(p-delta_z));
+
+  return normalize(n);
+}
+
+
+const float MARCH_SIZE = 0.08;
+const vec3 SUN_POSITION = vec3(1.0, 0.0, 0.0);
 vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
   float depth = 0.0;
   vec3 p = rayOrigin + depth * rayDirection;
@@ -72,13 +86,16 @@ vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
     float density = scene(p);
 
     if (density > 0.0) {
-      vec4 color = vec4(mix(vec3(1.0,1.0,1.0), vec3(0.0, 0.0, 0.0), density), density );
+      float diffuse = clamp((scene(p) - scene(p + 0.3 * SUN_POSITION)) / 0.3, 0.0, 1.0 );
+      vec3 lin = vec3(0.60,0.60,0.75) * 1.1 + 0.8 * vec3(1.0,0.6,0.3) * diffuse;
+      vec4 color = vec4(mix(vec3(1.0, 1.0, 1.0), vec3(0.0, 0.0, 0.0), density), density );
+      color.rgb *= lin;
       color.rgb *= color.a;
-      res += color*(1.0-res.a);
+      res += color * (1.0 - res.a);
     }
 
-    depth += MARCH_SIZE;
-    p = rayOrigin + depth * rayDirection;
+   p = rayOrigin + depth * rayDirection;
+   depth += MARCH_SIZE;
   }
 
   return res;
@@ -88,9 +105,11 @@ void main() {
     vec2 uv = vUv.xy;
 
     vec3 ro = vec3(0.0, 0.0, 5.0);
+//    vec3 lightPosition = vec3(1.0);
     vec3 ray_direction = normalize(vec3(uv, -1.0));
+    vec4 color = raymarch(ro, ray_direction);
 
 //    vec3 foo = vec3(fbm(ray_direction));
 //    fragColor = vec4(foo, 1.0);
-    fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
+    fragColor = color; 
 }
