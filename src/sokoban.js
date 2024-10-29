@@ -450,6 +450,7 @@ function drawWebGl(level) {
       if (tile === " ") { boardState[tilePosition] = 0; }
       if (tile === "#") { boardState[tilePosition] = 1; }
       if (tile === "@") { boardState[tilePosition] = 2; }
+      if (tile === "+") { boardState[tilePosition] = 2; }
       if (tile === "$") { boardState[tilePosition] = 3; }
       if (tile === ".") { boardState[tilePosition] = 4; }
       if (tile === "*") { boardState[tilePosition] = 5; }

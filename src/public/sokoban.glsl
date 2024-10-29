@@ -9,6 +9,11 @@ in vec2 vUv;
 out vec4 fragColor;
 uniform int boardstate[64];
 
+#define MAX_STEPS 70
+
+float sdSphere(vec3 p, float radius) {
+  return length(p) - radius;
+}
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}
@@ -47,6 +52,38 @@ float fbm(vec3 p) {
 
   return f;
 }
+float scene(vec3 p) {
+
+  float distance = sdSphere(p, 1.0);
+
+  float f = fbm(p);
+
+  return -distance + f;
+}
+
+const float MARCH_SIZE = 0.08;
+
+vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
+  float depth = 0.0;
+  vec3 p = rayOrigin + depth * rayDirection;
+  
+  vec4 res = vec4(0.0);
+
+  for (int i = 0; i < MAX_STEPS; i++) {
+    float density = scene(p);
+
+    if (density > 0.0) {
+      vec4 color = vec4(mix(vec3(1.0,1.0,1.0), vec3(0.0, 0.0, 0.0), density), density );
+      color.rgb *= color.a;
+      res += color*(1.0-res.a);
+    }
+
+    depth += MARCH_SIZE;
+    p = rayOrigin + depth * rayDirection;
+  }
+
+  return res;
+}
 
 const float boardSize = 8.0; 
 const float nrOfPictureRows = 3.0;
@@ -56,7 +93,7 @@ void main() {
     vec2 uv = vUv.xy;
     uv += 1.0; 
     uv *= 0.5; 
-    uv += 0.1*fbm(vec3(uv,0.0)) - 0.05;
+   // uv += 0.01*fbm(vec3(uv,0.0)) - 0.05;
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
       fragColor = vec4(1.0, 1.0, 1.0, 1.0);
       return; 
@@ -77,6 +114,22 @@ void main() {
     } else if (boardstate[i] == 2) {
       pictureRow = 1.0; // cat 
       pictureCol= 0.0; //
+      vec3 ro = vec3(0.0, 0.0, 5.0);
+      float mapX = (uv.x-(float(col)/8.0))/nrOfColumns*boardSize + pictureCol/nrOfColumns;
+      float mapY = (uv.y-(float(row)/8.0))/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows;
+      vec4 catColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);
+
+      // this is gray, because it is not white or black...
+      if (catColor.r > 0.01 && catColor.r < 0.999999999999999999) {
+          // obvious thing to do is use volumetric ray marching to texture the cat
+          vec3 ro = vec3(0.0, 0.0, 5.0);
+          vec3 ray_direction = normalize(vec3(uv.x-0.5,uv.y-0.5, -1.0));
+          catColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
+      }
+      fragColor = catColor;
+      return;
+
+
     } else if (boardstate[i] == 3) {
       pictureRow = 1.0; // nøste 
       pictureCol= 1.0; //
@@ -91,5 +144,6 @@ void main() {
     float mapX = (uv.x-(float(col)/8.0))/nrOfColumns*boardSize + pictureCol/nrOfColumns;
     float mapY = (uv.y-(float(row)/8.0))/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows;
       
-    fragColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);
+      vec3 ro = vec3(0.0, 0.0, 5.0);
+      fragColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);
 }
