@@ -17,6 +17,7 @@ export default {
         task4: resolve(__dirname, 'task4/index.html'),
         task5: resolve(__dirname, 'task5/index.html'),
         task6: resolve(__dirname, 'task6/index.html'),
+        sokoban: resolve(__dirname, 'sokoban/index.html'),
       }
     }
   }

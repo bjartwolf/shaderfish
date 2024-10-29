@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ray marching</title>
+    <style>
+    #c {
+        width: 300px;
+        aspect-ratio: 1/1;
+        position: absolute;
+        background-color: transparent;
+    }
+    .view-container {
+      position: absolute;
+      width: 300px;
+      top: 200px; 
+      left: 150px; 
+    }
+       
+    </style>
+  </head>
+  <body>
+  <script id="fragment_shader" src="/sokoban.glsl" type="x-shader/x-fragment"></script>
+  <div>
+  <div class="view-container">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAwCAYAAABwrHhvAAABnElEQVRYR+2XPU4DMRCFba5AREWdkhOkp+EkKRFnSIVS5gCcgSbX4AypkLgCPy/SoNm345/dWSlIjBtW8jjz+b3x2OSvn5EcY7fOjtUp5SUAbm+uixCn949Umw+ARRTwFIEb4GWzGuRvec7zAeBWIPoAFIhGFH1AK/D/GpHHf6ytNqKccyq9V2pz+OH7/RDt+GijFgGQ4Gm7Tc+HwwgCcxgWnCR+uPs8x7y+XSV84y8GgzQBsAgQepTAkFySMYCsB4iG6AKwxGNlJLlO1APxC8CyigWlIrMAJNZKXLLiDGD5zQBICOm1JVIDvbsXCKkNWNENwEpoBbjidWzLhhEAF1uPBawAr+Gdy/xIAWuXJQB9BGsAnFwr0gTo2b3EsA2146iP4sCCUsKa/xpAdqcbEH/rAsS3GwA7l8airdDHjsFGjcg6crxrOYJyDLkGON6yADHFViyNCEFWj2/NM4D7MuqtB2+c+/+CAAgFQoE/q8DFGtFir+I50i76Kp4K0PsuNK/jqcmseO35rFfxHAi5NfVNOeV3sD4uo4sr8A04kCebViQoKwAAAABJRU5ErkJggg==" />
+    <h1> Assignment 1</h1>
+    In this assignment we are just going to play with 
+    a shader, no fancy 3D yet. We just mess around with
+    getting the x and y coordinate as input and write
+    out the color for the given coordinate.
+
+    The shader will run in parallell for each pixel
+    in the canvas.
+
+    Edit the file src/public/task1.glsl and observe the changes
+
+  </div>
+  <canvas id="c"></canvas>
+  </div>
+  </body>
+<script type="module" src="/main.js"></script>
+
+</html>
