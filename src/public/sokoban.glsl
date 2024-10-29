@@ -36,7 +36,7 @@ float noise(vec3 p){
 }
 
 float fbm(vec3 p) {
-  vec3 q = p + iTime * 0.5 * vec3(1.0, -0.2, -1.0);
+  vec3 q = p + iTime * 1.0 * vec3(1.0, -0.2, -1.0);
   float g = noise(q);
 
   float f = 0.0;
@@ -70,7 +70,7 @@ vec4 raymarch(vec3 rayOrigin, vec3 rayDirection) {
   vec4 res = vec4(0.0);
 
   for (int i = 0; i < MAX_STEPS; i++) {
-    float density = scene(p);
+    float density = 2.0*scene(p);
 
     if (density > 0.0) {
       vec4 color = vec4(mix(vec3(1.0,1.0,1.0), vec3(0.0, 0.0, 0.0), density), density );
@@ -123,7 +123,7 @@ void main() {
       if (catColor.r > 0.01 && catColor.r < 0.999999999999999999) {
           // obvious thing to do is use volumetric ray marching to texture the cat
           vec3 ro = vec3(0.0, 0.0, 5.0);
-          vec3 ray_direction = normalize(vec3(uv.x-0.5,uv.y-0.5, -1.0));
+          vec3 ray_direction = normalize(vec3(uv.x-(1.0/8.0)*float(col),uv.y-(1.0/8.0)*float(row), -1.0));
           catColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
       }
       fragColor = catColor;
