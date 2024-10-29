@@ -1,5 +1,8 @@
 // game kind of shamelsessly stolen and bastartized from  
 // https://sokoboko.garoof.no/
+
+const boardState = new Int32Array(64);
+
 const vecs = new Map();
 const vec = (x, y) => {
   const key = `${x},${y}`;
@@ -75,6 +78,7 @@ let game;
 
 const startLevel = (str) => {
   game = newGame(str);
+  drawWebGl(game.level);
 };
 
 const player = ["@", "+"];
@@ -172,40 +176,10 @@ const colors = [
 ];
 
 const makeSprites = (img) => {
-  const canvas = document.body.appendChild(document.createElement("canvas"));
-  const ctx = canvas.getContext("2d");;
-  canvas.width = tileSize.x;
-  canvas.height = tileSize.y;
-  ctx.imageSmoothingEnabled = false;
-
-  const sprites = new Map(
-    [
-      [" ", vec(0, 0)],
-      ["#", vec(1, 0)],
-      ["@", vec(0, 1)],
-      ["+", vec(0, 1)],
-      ["$", vec(1, 1)],
-      [".", vec(0, 2)],
-      ["*", vec(1, 2)]
-    ].map((a) => {
-      ctx.drawImage(img, a[1].x * 16, a[1].y * 16, 16, 16, 0, 0, tileSize.x, tileSize.y);
-      return [a[0], canvas.toDataURL()];
-    })
-  );
-  canvas.remove();
-  return sprites;
-};
-
-const img = (tile, sprites) => {
-  const img = document.createElement("img");
-  img.src = sprites.get(tile);
-  img.alt = "";
-  return img;
 };
 
 const button = (tile, sprites) => {
   const button = document.createElement("button");
-  button.appendChild(img(tile, sprites));
   return button;
 };
 
@@ -250,20 +224,6 @@ const start = (str, sprites) => {
         [add(player, vec(1, 0)), "d"]
       ]
     );
-    game.level.forEach((row, y) => {
-      row.forEach((tile, x) => {
-        const pos = vec(x, y);
-        if (touch && buttons.has(pos)) {
-          const command = buttons.get(pos);
-          const btn = gamePre.appendChild(button(tile, sprites));
-          btn.title = `${descriptions[command]} (${command})`;
-          btn.onclick = perform(command);
-        } else {
-          gamePre.appendChild(img(tile, sprites));
-        }
-      });
-      gamePre.appendChild(document.createElement("br"));
-    });
   };
 
   perform = (() => {
@@ -281,6 +241,7 @@ const start = (str, sprites) => {
       if (commands.has(c)) {
         commands.get(c)();
         draw(game);
+        drawWebGl(game.level);
       }
     };
   })();
@@ -288,9 +249,8 @@ const start = (str, sprites) => {
   (() => {
 
     const layout = `
- w r y t
-asd
-z
+ w
+asd z
 `.split("\n").map((x) => x.split(""));
     layout.pop();
     layout.shift();
@@ -321,15 +281,12 @@ z
   draw(game);
 };
 
-const defaultLevel = `
-###
-######
+const defaultLevel = `######
 #. $ #
 # $  #
 #  @$#
 #.  .#
-######"
-`;
+######`;
 
 window.onload = () => {
 
@@ -421,48 +378,6 @@ void main() {
   async function createProgram(gl) {
     const fragmentShaderSource = await loadShader();
 
-    const boardState = new Int32Array(64);
-    boardState[0] = 1;
-    boardState[1] = 1;
-    boardState[2] = 1;
-    boardState[3] = 1;
-    boardState[4] = 1;
-    boardState[5] = 1;
-    boardState[6] = 1;
-    boardState[7] = 1;
-    boardState[8] = 1;
-    boardState[15] = 1;
-    boardState[23] = 1;
-    boardState[31] = 1;
-    boardState[39] = 1;
-    boardState[47] = 1;
-    boardState[16] = 1;
-    boardState[24] = 1;
-    boardState[32] = 1;
-    boardState[40] = 1;
-    boardState[48] = 1;
-    boardState[13] = 1;
-
-    boardState[52] = 1;
-    boardState[53] = 1;
-    boardState[55] = 1;
-    boardState[56] = 1;
-    boardState[57] = 1;
-    boardState[58] = 1;
-    boardState[59] = 1;
-    boardState[60] = 1;
-    boardState[61] = 1;
-    boardState[62] = 1;
-    boardState[63] = 1;
-
-    boardState[17] = 2;
-    boardState[28] = 2;
-    boardState[29] = 3;
-    boardState[30] = 4;
-    boardState[25] = 4;
-    boardState[18] = 5;
-    boardState[41] = 5;
-
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
 
@@ -480,9 +395,6 @@ void main() {
       gl.deleteProgram(program);
       return null;
     }
-    const gameStateLocation = gl.getUniformLocation(program, 'boardstate');
-    gl.uniform1iv(gameStateLocation, boardState);
-
     loadTexture(gl, program);
     return program;
   }
@@ -528,6 +440,8 @@ void main() {
     gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
     gl.uniform1f(timeLocation, time);
 
+    const gameStateLocation = gl.getUniformLocation(program, 'boardstate');
+    gl.uniform1iv(gameStateLocation, boardState);
 
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -538,4 +452,21 @@ void main() {
   requestAnimationFrame(render);
 }
 
+function drawWebGl(level) {
+  // this is a bit too big with 9 rows. crazy 
+  // will only loop the middle part  
+  for (let i = 0; i < level.length; i++) {
+    for (let j = 0; j < level[0].length; j++) {
+      const tile = level[i][j];
+      const tilePosition = i * 8 + j;
+      if (tile === " ") { boardState[tilePosition] = 0; }
+      if (tile === "#") { boardState[tilePosition] = 1; }
+      if (tile === "@") { boardState[tilePosition] = 2; }
+      if (tile === "$") { boardState[tilePosition] = 3; }
+      if (tile === ".") { boardState[tilePosition] = 4; }
+      if (tile === "*") { boardState[tilePosition] = 5; }
+    }
+  }
+  console.log("drawWebGl", level);
+}
 main();
