@@ -59,13 +59,29 @@ void main() {
     // figure out which col and row we are in, really
     int col = int(floor(uv.x * 8.0)); 
     int row = int(floor(uv.y * 8.0)); 
-
     int i = 8 * row + col; 
     if (boardstate[i] == 1) {
-      fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+      float nrOfPictureRows = 3.0;
+      float nrOfColumnRows = 2.0;
+      float pictureRow = 1.0; // cat
+      float pictureCol= 0.0; // cat
+      float y1 = float(row)/8.0; 
+      float y2 = float(row+1)/8.0; 
+      float deltaY = y2 - y1;
+      float x1 = float(col)/8.0; 
+      float x2 = float(col+1)/8.0; 
+      float deltaX = x2 - x1;
+      // remainder of x, how far into the sprite
+
+      float remX = uv.x - x1; 
+      float remY = uv.y - y1;
+      float mapX = remX*3.0;
+      float mapY = 1.0 - (remY*nrOfPictureRows + pictureRow)/nrOfPictureRows;
+      
+      fragColor = textureLod(u_texture, vec2(mapX+uv.x/8.0, mapY+uv.y/8.0 ), 0.0);
+      //fragColor = vec4(1.0, 0.0, 0.0, 1.0);
     } else {
       fragColor = vec4(0.0, 1.0, 0.0, 1.0);
     }
-//          fragColor = textureLod(u_texture, vec2(uv.x, 1.0-uv.y ), 0.0);
   //    fragColor = vec4(uv.x,uv.y,0.0,1.0); 
 }
