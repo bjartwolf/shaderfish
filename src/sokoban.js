@@ -167,17 +167,6 @@ const dirNum = (str) => {
   return s === "u" ? 0 : s === "l" ? 1 : s === "d" ? 2 : s === "r" ? 3 : false;
 };
 
-
-const colors = [
-  "#000000", "#1D2B53", "#7E2553", "#008751",
-  "#AB5236", "#5F574F", "#C2C3C7", "#FFF1E8",
-  "#FF004D", "#FFA300", "#FFEC27", "#00E436",
-  "#29ADFF", "#83769C", "#FF77A8", "#FFCCAA"
-];
-
-const makeSprites = (img) => {
-};
-
 const button = (tile, sprites) => {
   const button = document.createElement("button");
   return button;
@@ -292,7 +281,6 @@ window.onload = () => {
 
   const img = document.getElementById("sprites");
   img.remove()
-  const sprites = makeSprites(img);
 
   let levelStr = defaultLevel;
   const params = new URLSearchParams(location.search);
@@ -304,7 +292,7 @@ window.onload = () => {
       console.error(e);
     }
   }
-  start(levelStr, sprites);
+  start(levelStr, null);
 
 };
 
@@ -467,6 +455,5 @@ function drawWebGl(level) {
       if (tile === "*") { boardState[tilePosition] = 5; }
     }
   }
-  console.log("drawWebGl", level);
 }
 main();
