@@ -57,6 +57,10 @@ void main() {
     uv += 1.0; 
     uv *= 0.5; 
     uv += 0.1*fbm(vec3(uv,0.0)) - 0.05;
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+      fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      return; 
+    }
     uv.y = 1.0 - uv.y; 
 //    uv.x *= iResolution.x / iResolution.y;
     
@@ -68,16 +72,23 @@ void main() {
 
     int i = 8 * row + col; 
     if (boardstate[i] == 1) {
-      pictureRow = 1.0; // cat
-      pictureCol= 0.0; 
+      pictureRow = 0.0; // stein
+      pictureCol= 1.0; 
     } else if (boardstate[i] == 2) {
+      pictureRow = 1.0; // cat 
+      pictureCol= 0.0; //
+    } else if (boardstate[i] == 3) {
       pictureRow = 1.0; // nøste 
       pictureCol= 1.0; //
-    } else if (boardstate[i] == 3) {
-      pictureRow = 0.0; // stein 
-      pictureCol= 1.0; //
+    } else if (boardstate[i] == 4) {
+      pictureRow = 0.0; // emptygoal 
+      pictureCol= 3.0; //
+    } else if (boardstate[i] == 5) {
+      pictureRow = 1.0; // goal 
+      pictureCol= 3.0; //
     }
-     float mapX = (uv.x-(float(col)/8.0))/nrOfColumns*boardSize + pictureCol/nrOfColumns;
+  
+    float mapX = (uv.x-(float(col)/8.0))/nrOfColumns*boardSize + pictureCol/nrOfColumns;
     float mapY = (uv.y-(float(row)/8.0))/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows;
       
     fragColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);

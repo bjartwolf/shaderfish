@@ -69,16 +69,44 @@ void main() {
     const fragmentShaderSource = await loadShader();
 
     const boardState = new Int32Array(64);
-    boardState[0] = 1; // for now this means cat in position x = 3
-    boardState[1] = 2; // for now this means cat in position x = 3
-    boardState[3] = 1; // for now this means cat in position x = 3
-    boardState[4] = 2; // for now this means cat in position x = 3
-    boardState[17] = 3; // for now this means cat in position x = 3
-    boardState[13] = 1; // for now this means cat in position x = 3
-    boardState[53] = 1; // for now this means cat in position x = 3
-    boardState[62] = 2; // for now this means cat in position x = 3
-    boardState[63] = 1; // for now this means cat in position x = 3
+    boardState[0] = 1;
+    boardState[1] = 1;
+    boardState[2] = 1;
+    boardState[3] = 1;
+    boardState[4] = 1;
+    boardState[5] = 1;
+    boardState[6] = 1;
+    boardState[7] = 1;
+    boardState[8] = 1;
+    boardState[15] = 1;
+    boardState[23] = 1;
+    boardState[31] = 1;
+    boardState[39] = 1;
+    boardState[47] = 1;
+    boardState[55] = 1;
+    boardState[16] = 1;
+    boardState[24] = 1;
+    boardState[32] = 1;
+    boardState[40] = 1;
+    boardState[48] = 1;
+    boardState[56] = 1;
+    boardState[13] = 1;
+    boardState[52] = 1;
+    boardState[53] = 1;
+    boardState[57] = 1;
+    boardState[58] = 1;
+    boardState[59] = 1;
+    boardState[60] = 1;
+    boardState[61] = 1;
+    boardState[62] = 1;
+    boardState[63] = 1;
 
+    boardState[17] = 2;
+    boardState[19] = 3;
+    boardState[38] = 4;
+    boardState[39] = 4;
+    boardState[18] = 5;
+    boardState[41] = 5;
 
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
