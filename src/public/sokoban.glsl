@@ -48,6 +48,9 @@ float fbm(vec3 p) {
   return f;
 }
 
+const float boardSize = 8.0; 
+const float nrOfPictureRows = 3.0;
+const float nrOfColumns = 2.0;
 
 void main() {
     vec2 uv = vUv.xy;
@@ -58,23 +61,24 @@ void main() {
 //    uv.x *= iResolution.x / iResolution.y;
     
     // figure out which col and row we are in, really
-    int col = int(floor(uv.x * 8.0)); 
-    int row = int(floor(uv.y * 8.0)); 
+    int col = int(floor(uv.x * boardSize)); 
+    int row = int(floor(uv.y * boardSize)); 
+    float pictureRow = 0.0; // default empty
+    float pictureCol= 0.0; // default empty 
+
     int i = 8 * row + col; 
     if (boardstate[i] == 1) {
-      float boardSize = 8.0; 
-      float nrOfPictureRows = 3.0;
-      float nrOfColumnRows = 2.0;
-      float pictureRow = 1.0; // cat
-      float pictureCol= 0.0; // cat
-
-      float mapX = (uv.x-(float(col)/8.0))/nrOfColumnRows*boardSize;
-      float mapY = (uv.y-(float(row)/8.0))/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows;
-      
-      fragColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);
-      //fragColor = vec4(1.0, 0.0, 0.0, 1.0);
-    } else {
-      fragColor = vec4(0.0, 1.0, 0.0, 1.0);
+      pictureRow = 1.0; // cat
+      pictureCol= 0.0; 
+    } else if (boardstate[i] == 2) {
+      pictureRow = 1.0; // nøste 
+      pictureCol= 1.0; //
+    } else if (boardstate[i] == 3) {
+      pictureRow = 0.0; // stein 
+      pictureCol= 1.0; //
     }
-  //    fragColor = vec4(uv.x,uv.y,0.0,1.0); 
+     float mapX = (uv.x-(float(col)/8.0))/nrOfColumns*boardSize + pictureCol/nrOfColumns;
+    float mapY = (uv.y-(float(row)/8.0))/nrOfPictureRows*boardSize+pictureRow/nrOfPictureRows;
+      
+    fragColor = textureLod(u_texture, vec2(mapX, mapY), 0.0);
 }

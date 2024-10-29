@@ -70,9 +70,13 @@ void main() {
 
     const boardState = new Int32Array(64);
     boardState[0] = 1; // for now this means cat in position x = 3
+    boardState[1] = 2; // for now this means cat in position x = 3
     boardState[3] = 1; // for now this means cat in position x = 3
+    boardState[4] = 2; // for now this means cat in position x = 3
+    boardState[17] = 3; // for now this means cat in position x = 3
     boardState[13] = 1; // for now this means cat in position x = 3
     boardState[53] = 1; // for now this means cat in position x = 3
+    boardState[62] = 2; // for now this means cat in position x = 3
     boardState[63] = 1; // for now this means cat in position x = 3
 
 
