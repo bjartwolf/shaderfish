@@ -1,6 +1,6 @@
 #version 300 es 
 precision highp float;
-varying vec2 vUv;
+in vec2 vUv;
 out vec4 fragColor;
 
 void main() {
