@@ -25,15 +25,15 @@ void main() {
     }
     float frame = float(boardstate[0]);
 
-    vec2 catX = vec2(0.0,0.8); 
-    vec2 catY = vec2(0.0,0.8);
+    vec2 catX = vec2(0.1,0.3);
+    vec2 catY = vec2(0.2,0.3);
     float scaleX = 1.0/(catX.y - catX.x);
     float scaleY = 1.0/(catY.y - catY.x);
   
     if (uv.x > catX.x && uv.x < catX.y && uv.y > catY.x && uv.y < catY.y) {
       vec2 catPos = vec2(0.0, 0.0);
-      catPos.y = (uv.y)*scaleY;
-      catPos.x = (uv.x)*scaleX/frameCount+frame*pixelsPrFrame/pixelsX;
+      catPos.x = (uv.x-catX.x)*scaleX/frameCount+frame*pixelsPrFrame/pixelsX;
+      catPos.y = (uv.y-catY.x)*scaleY;
         
         //float color = texelFetchOffset(u_texture, catPos, 0, vec2(0.5,0.5));
       
