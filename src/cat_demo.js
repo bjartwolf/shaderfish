@@ -1,6 +1,3 @@
-// game kind of shamelsessly stolen and bastartized from  
-// https://sokoboko.garoof.no/
-
 const boardState = new Int32Array(64);
 
 const style = (bc, hc, ac) => `button {
@@ -167,4 +164,188 @@ void main() {
   requestAnimationFrame(render);
 }
 
-main();
+
+
+function frequencyFromNoteNumber(note) {
+  return 440 * Math.pow(2, (note - 69) / 12);
+}
+
+export default class Synth {
+  constructor(actx) {
+    this.actx = actx;
+    this.out = this.comp();
+    this.out.connect(actx.destination);
+
+    this.A = 0.0;
+    this.D = 0.75;
+    this.S = 0.0;
+    this.R = 0.0;
+
+    this.notes = {};
+  }
+
+  envelope(A, D, S, R) {
+    this.A = A;
+    this.D = D;
+    this.S = S;
+    this.R = R;
+  }
+
+  osc(type, freq, detune = 0) {
+    let o = this.actx.createOscillator();
+    o.type = type;
+    o.frequency.value = freq;
+    o.detune.value = detune;
+    o.start();
+
+    return o;
+  }
+
+  amp() {
+    let g = this.actx.createGain();
+    g.gain.value = 0.0;
+
+    return g;
+  }
+
+  comp() {
+    let c = this.actx.createDynamicsCompressor();
+    c.threshold.value = 0;
+    c.knee.value = 20;
+    c.ratio.value = 5;
+    c.attack.value = 0;
+    c.release.value = 0.24;
+
+    return c;
+  }
+
+  play(note, at, dur) {
+    if (!note) return;
+    let freq = frequencyFromNoteNumber(note);
+
+    let A = this.A * dur;
+    let D = this.D * dur;
+    let R = this.R * dur;
+
+    let v = this.osc("square", freq, 0);
+    let a = this.amp();
+
+    a.gain.setValueAtTime(1, at);
+    a.connect(this.out);
+    v.connect(a);
+
+    a.gain.linearRampToValueAtTime(1.0, at + A);
+    a.gain.linearRampToValueAtTime(this.S, at + A + D);
+    a.gain.linearRampToValueAtTime(this.S, at + A + D);
+    a.gain.linearRampToValueAtTime(0.0001, at + A + D + R);
+    v.stop(at + A + D + R);
+  }
+
+  noteOn(note) {
+    if (!note) return;
+    let freq = frequencyFromNoteNumber(note);
+    let now = this.actx.currentTime;
+
+    let A = this.A;
+    let D = this.D;
+
+    let v = this.osc("square", freq, 0);
+    let a = this.amp();
+
+    a.gain.setValueAtTime(1, now);
+    a.connect(this.out);
+    v.connect(a);
+
+    a.gain.linearRampToValueAtTime(1.0, now + A);
+    a.gain.linearRampToValueAtTime(this.S, now + A + D);
+    a.gain.linearRampToValueAtTime(this.S, now + A + D);
+
+    this.notes[note] = () => {
+      let now = this.actx.currentTime;
+      let R = this.R;
+      a.gain.linearRampToValueAtTime(0.0001, now + R);
+      v.stop(now + R);
+
+      delete this.notes[note];
+    };
+  }
+
+  noteOff(note) {
+    if (!this.notes[note]) return;
+
+    this.notes[note]();
+  }
+}
+
+
+let actx;
+let synth;
+let t0 = 0;
+
+const PULSE = 0.25; // s
+
+const POPCORN = [
+  0, -2, 0, -5, -9, -5, -12, null, // 0-7
+  0, -2, 0, -5, -9, -5, -12, null, // 8-15
+  0, 2, 3, 2, 3, 3, 0, 2, 0, 2, 2, -2, 0, -2, 0, 0, -4, 0 // 16 - 33
+];
+
+const HALF_NOTES = [
+  4,
+  12,
+  19, 22, 24, 27, 29, 32
+];
+
+const ROOT = 83;
+const SONG = POPCORN.reduce(function (acc, n, i) {
+  let durationSoFar = acc[i - 1]?.on || 0;
+  let previousNoteDuration = acc[i - 1]?.dur || 0;
+  let isThisNoteAHalfNote = HALF_NOTES.indexOf(i) > -1;
+
+  let note = {
+    note: n == null ? n : n + ROOT,
+    on: durationSoFar + previousNoteDuration,
+    dur: (isThisNoteAHalfNote ? 0.5 : 1) * PULSE,
+  };
+  acc.push(note);
+
+  return acc;
+}, []);
+
+let rAF;
+const LOOKAHEAD = 0.75;
+
+let QUEUE = [...SONG];
+
+function loop() {
+  let lastNote = SONG[SONG.length - 2];
+  let tMax = lastNote.on + lastNote.dur;
+
+  let deltaT = actx.currentTime - t0;
+
+  rAF = requestAnimationFrame(loop);
+  if (deltaT > tMax) {
+    cancelAnimationFrame(rAF);
+    return;
+  }
+
+  let scheduleThreshold = deltaT + LOOKAHEAD;
+  while (QUEUE.length && QUEUE[0].on < scheduleThreshold) {
+    let { note, on, dur } = QUEUE[0];
+    QUEUE.splice(0, 1);
+
+    if (note == null) continue;
+
+    synth.play(note, t0 + on, dur);
+  }
+}
+
+document.addEventListener('keydown', function (event) {
+  actx = new AudioContext();
+  synth = new Synth(actx);
+  actx.resume();
+  t0 = actx.currentTime;
+  QUEUE = [...SONG];
+  loop();
+  main();
+}, { once: true });
