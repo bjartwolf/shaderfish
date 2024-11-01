@@ -25,8 +25,11 @@ void main() {
     }
     float frame = float(boardstate[0]);
 
-    vec2 catX = vec2(0.1,0.3);
-    vec2 catY = vec2(0.2,0.3);
+    float timeScaled = iTime / 10.0; 
+    float deltaX = mod(timeScaled,1.0);
+    float deltaY = 0.05*sin(2.0*iTime);
+    vec2 catX = vec2(0.1+deltaX,0.3+deltaX);
+    vec2 catY = vec2(0.2+deltaY,0.3+deltaY);
     float scaleX = 1.0/(catX.y - catX.x);
     float scaleY = 1.0/(catY.y - catY.x);
   
