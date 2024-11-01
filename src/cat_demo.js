@@ -156,6 +156,8 @@ void main() {
     const gameStateLocation = gl.getUniformLocation(program, 'boardstate');
     gl.uniform1iv(gameStateLocation, boardState);
 
+    boardState[0] = parseInt(time * 4 % 8);
+
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -165,21 +167,4 @@ void main() {
   requestAnimationFrame(render);
 }
 
-function drawWebGl(level) {
-  // this is a bit too big with 9 rows. crazy 
-  // will only loop the middle part  
-  for (let i = 0; i < level.length; i++) {
-    for (let j = 0; j < level[0].length; j++) {
-      const tile = level[i][j];
-      const tilePosition = i * 8 + j;
-      if (tile === " ") { boardState[tilePosition] = 0; }
-      if (tile === "#") { boardState[tilePosition] = 1; }
-      if (tile === "@") { boardState[tilePosition] = 2; }
-      if (tile === "+") { boardState[tilePosition] = 2; }
-      if (tile === "$") { boardState[tilePosition] = 3; }
-      if (tile === ".") { boardState[tilePosition] = 4; }
-      if (tile === "*") { boardState[tilePosition] = 5; }
-    }
-  }
-}
 main();

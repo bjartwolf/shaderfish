@@ -11,7 +11,7 @@ uniform int boardstate[64];
 
 #define MAX_STEPS 70
 
-const float framesCount = 8.0; 
+const float frameCount = 8.0; 
 
 void main() {
     vec2 uv = vUv.xy;
@@ -21,7 +21,9 @@ void main() {
       fragColor = vec4(1.0, 1.0, 1.0, 1.0);
       return; 
     }
-    uv.y = 1.0 - uv.y; 
+    float frame = float(boardstate[0]);
+    uv.y = mod((1.0 - uv.y)*2.0,1.0);
+    uv.x = mod((uv.x)/frameCount,1.0);
     
     fragColor = textureLod(u_texture, uv, 0.0);
 }
