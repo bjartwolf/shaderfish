@@ -24,16 +24,19 @@ void main() {
       fragColor = vec4(1.0, 0.0, 0.0, 1.0);
     }
     float frame = float(boardstate[0]);
-    vec2 catPos = vec2(0.0, 0.0);
 
-    float scale = 20.0;
-    if (uv.x > 0.0 && uv.x*scale < 1.0 && uv.y > 0.0 && uv.y*scale < 1.0) {
-    
-      catPos.y = scale*mod(uv.y,1.0)*1.0;
-      catPos.x = scale*mod((uv.x)/frameCount,1.0)+frame*pixelsPrFrame/pixelsX;
+    vec2 catX = vec2(0.0,0.8); 
+    vec2 catY = vec2(0.0,0.8);
+    float scaleX = 1.0/(catX.y - catX.x);
+    float scaleY = 1.0/(catY.y - catY.x);
+  
+    if (uv.x > catX.x && uv.x < catX.y && uv.y > catY.x && uv.y < catY.y) {
+      vec2 catPos = vec2(0.0, 0.0);
+      catPos.y = (uv.y)*scaleY;
+      catPos.x = (uv.x)*scaleX/frameCount+frame*pixelsPrFrame/pixelsX;
+        
+        //float color = texelFetchOffset(u_texture, catPos, 0, vec2(0.5,0.5));
       
-      //float color = texelFetchOffset(u_texture, catPos, 0, vec2(0.5,0.5));
-    
       fragColor = textureLod(u_texture, catPos, 0.0);
    // fragColor = vec4(color);
     }
