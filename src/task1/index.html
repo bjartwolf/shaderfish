@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ray marching</title>
+    <style>
+    #c {
+        width: 500px;
+        aspect-ratio: 1/1;
+        position: absolute;
+        background-color: transparent;
+    }
+    .view-container {
+      position: absolute;
+      width: 300px;
+      top: 200px; 
+      left: 150px; 
+    }
+       
+    </style>
+  </head>
+  <body>
+  <script id="fragment_shader" src="/task1.glsl" type="x-shader/x-fragment"></script>
+  <div>
+  <div class="view-container">
+    <h1> Assignment 1</h1>
+    In this assignment we are just going to play with 
+    a shader, no fancy 3D yet. We just mess around with
+    getting the x and y coordinate as input and write
+    out the color for the given coordinate.
+
+    The shader will run in parallell for each pixel
+    in the canvas.
+
+    Edit the file src/public/task1.glsl and observe the changes
+
+  </div>
+  <canvas id="c"></canvas>
+  </div>
+  </body>
+<script type="module" src="/main.js"></script>
+
+</html>

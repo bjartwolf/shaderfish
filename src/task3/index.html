@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ray marching</title>
+    <style>
+    #c {
+        height: 50%;
+        aspect-ratio: 1/1;
+        z-index: 1;
+        position: absolute;
+        background-color: transparent;
+    }
+    .view-container {
+      position: absolute;
+      top: 250px; 
+      left: 200px; 
+      width: 300px;
+      z-index: 1;
+    }
+       
+    </style>
+  </head>
+  <body>
+  <script id="fragment_shader" src="/task3.glsl" type="x-shader/x-fragment"></script>
+  <div>
+    <div class="view-container">
+      <h1> Assignment 3</h1>
+      This gets a bit more fancy. 
+      We are only drawing a circle, it looks flat, but that
+      is mostly lightning being very naive and coming later...
+
+      Now we are marching along rays out of the camera. We are calculating the distance from <thead>
+      ray to the nearest object using the distance function of the world.
+      We only march along the ray as long as the distance is to some object nearby.
+
+    </div>
+    <canvas id="c"></canvas>
+  </div>
+  </body>
+<script type="module" src="/main.js"></script>
+
+</html>

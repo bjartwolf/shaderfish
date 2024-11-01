@@ -1,131 +1,112 @@
-import * as THREE from "three";
-import * as fish from "/shapes/fish.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { randFloat } from "three/src/math/MathUtils";
+// https://registry.khronos.org/OpenGL-Refpages/es3.0/
+async function main() {
+  const canvas = document.querySelector('#c');
+  const gl = canvas.getContext('webgl2', { antialias: true }, "true");
 
-let scene, camera, renderer, controls, t0;
-
-t0 = Date.now();
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
-
-window.addEventListener('resize', onWindowResize, false);
-
-function onWindowResize(){
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-
-function loadTexture(url) {
-  return new Promise((resolve, reject) => {
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      url,
-      function (ok) {
-        return resolve(ok);
-      },
-      undefined,
-      function (err) {
-        return reject(err);
-      }
-    );
-  });
-}
-
-const texture = await loadTexture("/fish_uv_3.png");
-texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set(2, 2);
-
-const UNIFORMS = {
-  time: { value: 0.0 },
-  fishTexture: { value: texture },
-};
-
-function init() {
-  scene = new THREE.Scene();
-
-  initRenderer();
-  document.body.appendChild(renderer.domElement);
-
-  initShapes();
-  initCamera();
-
-  renderer.render(scene, camera);
-}
-
-function initCamera() {
-  camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 0.001, 1000000);
-  let camx = 50;
-  let camy = 50;
-  camera.translateX(camx);
-  camera.translateZ(-100);
-  camera.translateY(camy);
-  //  camera.lookAt(new THREE.Vector3(50.0,50.0,0.0)); // does not work with controls enabled
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.target = new THREE.Vector3(camx, camy, 0.0);
-  controls.update();
-}
-
-function initRenderer() {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("webgl2");
-  renderer = new THREE.WebGLRenderer({ canvas: canvas, context: context });
-  //  console.log(renderer.capabilities.isWebGL2);
-
-  renderer.setSize(WIDTH, HEIGHT);
-}
-
-async function initShapes() {
-  let matrixes = await (await fetch("/matrixes.json")).json();
-  let fishCount = matrixes.length;
-  const colors = new Float32Array(fishCount*3);
-  for (let i = 0; i < fishCount; i++) {
-    colors[i*3] = randFloat(0.2,0.6); 
-    colors[i*3+1] = randFloat(0.2,0.6); 
-    colors[i*3+1] = randFloat(0.2,0.7); 
+  if (!gl) {
+    console.error('WebGL not supported');
+    return;
   }
-  const colorAttributes = new THREE.InstancedBufferAttribute(colors, 3);
 
-  const instancedFishses = await fish.createInstancedFish(
-    UNIFORMS,
-    fishCount 
-  );
+  // Vertex shader program
+  const vertexShaderSource = `#version 300 es 
+precision highp float;
 
-  for (var i = 0; i < matrixes.length; i++) {
-    const matrix = new THREE.Matrix4().identity();
-    let a = matrixes[i][0][0];
-    let c = matrixes[i][0][1];
-    let b = matrixes[i][1][0];
-    let d = matrixes[i][1][1];
-    let e = matrixes[i][2][0];
-    let f = matrixes[i][2][1];
-    matrix.set( a,b,0,e,
-                c,d,0,f,
-                0,0,1.0,0,
-                0,0,0,1.0); 
+in vec4 position;
+out vec2 vUv;
 
-    /*
-   */
-    instancedFishses.setMatrixAt(i, matrix);
+void main() {
+    vUv = position.xy;
+    gl_Position = position; 
   }
-  instancedFishses.geometry.setAttribute('fish_color', colorAttributes);
+  `;
 
-  instancedFishses.instanceMatrix.needsUpdate = true;
-  scene.add(instancedFishses);
+  // Fragment shader program
+  async function loadShader() {
+    const script = document.getElementById("fragment_shader");
+    const response = await fetch(script.src);
+    return await response.text();
+  }
 
-//  const axesHelper = new THREE.AxesHelper(5);
-//  scene.add(axesHelper);
-}
+  //  https://cdn.maximeheckel.com/noises/noise2.png
+  function createShader(gl, type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error('Error compiling shader:', gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+    }
+    return shader;
+  }
 
-function render() {
+  async function createProgram(gl) {
+    const fragmentShaderSource = await loadShader();
+
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Error linking program:', gl.getProgramInfoLog(program));
+      gl.deleteProgram(program);
+      return null;
+    }
+    return program;
+  }
+
+  const program = await createProgram(gl);
+
+  const positionLocation = gl.getAttribLocation(program, 'position');
+  const resolutionLocation = gl.getUniformLocation(program, 'iResolution');
+  const timeLocation = gl.getUniformLocation(program, 'iTime');
+
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  const positions = [
+    -1, -1,
+    1, -1,
+    -1, 1,
+    -1, 1,
+    1, -1,
+    1, 1,
+  ];
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+  function resizeCanvasToDisplaySize(canvas) {
+    const displayWidth = canvas.clientWidth;
+    const displayHeight = canvas.clientHeight;
+    if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+    }
+  }
+
+  function render(time) {
+    resizeCanvasToDisplaySize(gl.canvas);
+    time *= 0.001;
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    gl.useProgram(program);
+
+    gl.enableVertexAttribArray(positionLocation);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+    gl.uniform1f(timeLocation, time);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    requestAnimationFrame(render);
+  }
+
   requestAnimationFrame(render);
-  controls.update();
-  renderer.render(scene, camera);
-  //  UNIFORMS.time.value = 1.0;
-  UNIFORMS.time.value = (Date.now() - t0) * 0.001;
 }
 
-init();
-render();
+main();
