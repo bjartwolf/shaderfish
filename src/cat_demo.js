@@ -1,23 +1,5 @@
 const boardState = new Int32Array(64);
 
-const style = (bc, hc, ac) => `button {
-      display: inline-block; border-style: none;
-      padding: 0;
-      margin: 0;
-      height: ${tileSize.x}px;
-      width: ${tileSize.y}px;
-      background-color: ${bc};
-    }
-    button:hover {
-      background-color: ${hc};
-    }
-    button:active {
-      background-color: ${ac};
-    }
-    button img {
-      mix-blend-mode: multiply;
-    }`;
-
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
   const canvas = document.querySelector('#c');
@@ -97,8 +79,6 @@ void main() {
     gl.linkProgram(program);
     gl.useProgram(program);
 
-    // hardcoded here and in shader to 8x8 = 64, maybe not bother with larger , has to be something with 16 in shader size...
-
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Error linking program:', gl.getProgramInfoLog(program));
@@ -136,13 +116,17 @@ void main() {
     }
   }
 
-  function render(time) {
+  let catPos = 0;
+  let previousAnimationFrame = 0;
+  function render() {
     resizeCanvasToDisplaySize(gl.canvas);
-    time *= 0.001;
+    let time = actx.currentTime;
+    //    time *= 0.001;
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
 
+    // move these out?
     gl.enableVertexAttribArray(positionLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
@@ -151,9 +135,15 @@ void main() {
     gl.uniform1f(timeLocation, time);
 
     const gameStateLocation = gl.getUniformLocation(program, 'boardstate');
+    let animationFrame = time * 4 % 8;
+    if ((time > 1.5 && time < 1.75) || (time > 3.5 && time < 3.75) || (time > 7.5)) {
+      animationFrame = previousAnimationFrame;
+    } else {
+      catPos += 1;
+    }
     gl.uniform1iv(gameStateLocation, boardState);
-
-    boardState[0] = parseInt(time * 4 % 8);
+    boardState[0] = parseInt(animationFrame);
+    boardState[1] = parseInt(catPos);
 
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -164,10 +154,8 @@ void main() {
   requestAnimationFrame(render);
 }
 
-
-
 function frequencyFromNoteNumber(note) {
-  return 440 * Math.pow(2, (note - 69) / 12);
+  return 0.5 * 440 * Math.pow(2, (note - 69) / 12);
 }
 
 export default class Synth {
@@ -227,7 +215,7 @@ export default class Synth {
     let D = this.D * dur;
     let R = this.R * dur;
 
-    let v = this.osc("square", freq, 0);
+    let v = this.osc("sawtooth", freq, 0);
     let a = this.amp();
 
     a.gain.setValueAtTime(1, at);
@@ -277,7 +265,6 @@ export default class Synth {
   }
 }
 
-
 let actx;
 let synth;
 let t0 = 0;
@@ -317,12 +304,16 @@ const LOOKAHEAD = 0.75;
 
 let QUEUE = [...SONG];
 
-function loop() {
+function loop(time) {
   let lastNote = SONG[SONG.length - 2];
   let tMax = lastNote.on + lastNote.dur;
 
-  let deltaT = actx.currentTime - t0;
+  //  let deltaT = time - t0;
+  // console.log("t0", t0)
+  // console.log("thistime", time * 0.001 - t0);
 
+  let deltaT = actx.currentTime - t0;
+  //  console.log("deltat", deltaT);
   rAF = requestAnimationFrame(loop);
   if (deltaT > tMax) {
     cancelAnimationFrame(rAF);
@@ -340,7 +331,8 @@ function loop() {
   }
 }
 
-document.addEventListener('keydown', function (event) {
+//document.addEventListener('keydown', function (event) {
+document.addEventListener('DOMContentLoaded', function (event) {
   actx = new AudioContext();
   synth = new Synth(actx);
   actx.resume();

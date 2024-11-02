@@ -24,10 +24,11 @@ void main() {
       fragColor = vec4(1.0, 0.0, 0.0, 1.0);
     }
     float frame = float(boardstate[0]);
+    float xPos = float(boardstate[1]);
 
     float timeScaled = iTime / 10.0; 
-    float deltaX = mod(timeScaled,1.1);
-    float deltaY = 0.05*sin(2.0*iTime);
+    float deltaX = mod(xPos/1500.0,1.1);
+    float deltaY = 0.0;// 0.05*sin(2.0*iTime);
     vec2 catX = vec2(-0.2+deltaX,0.0+deltaX);
     vec2 catY = vec2(0.2+deltaY,0.3+deltaY);
     float scaleX = 1.0/(catX.y - catX.x);

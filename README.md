@@ -20,6 +20,7 @@ Escher-fish-tesselation using bezier curves and vertex shaders in three.js
 Just edit the shaders (the glsl files) and the results will reload automatically.
 
 # Resources
+
 On volumetric ray marching and ray marching in general:
 <https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/>
 
@@ -44,4 +45,11 @@ Book on designing tesselations:
 <https://www.amazon.com/Designing-Tessellations-Secrets-Interlocking-Patterns/dp/0809228661j>
 
 The shader god
+
 <https://iquilezles.org/>
+
+I use this to allow for playing audio
+
+```powershell
+ &"C:\Program Files\Google\Chrome\Application\chrome.exe" --autoplay-policy=no-user-gesture-required
+```
