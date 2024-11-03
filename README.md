@@ -48,7 +48,23 @@ The shader god
 
 <https://iquilezles.org/>
 
-I use this to allow for playing audio
+## Cat demo
+
+Design doc for cat demo:
+I use this to allow for playing audio in the cat demo while developing.
+The idea for the cat demo in the longer run is that it will be a sort of C64 inspired sprite
+cat with the same color pallette. I should make it a C64 sprite which is 24x21 and allow for the
+color pallette as the C64. The sound should also be C64 like, not a very strict SID emulation, but
+all generated and when possible use timings and settings that is possible on the C64, max three
+channes etc. The cat should also move restricted to resolution as if it moved in a C64 space,but
+it might have some more freedom. It should move in "steps" locked to foot movement, but it could
+be that it gets more or less pixels to move in...
+
+The "modern" aspect of it will be mainly driven by two things:
+
+- Using physics to simulate things going on by solving differential equations, ideally
+with high accuracy, probably chaotic systems.
+- Combining it with ray marching and smilar techniques to make the C64 cat experience things it never saw.
 
 ```powershell
  &"C:\Program Files\Google\Chrome\Application\chrome.exe" --autoplay-policy=no-user-gesture-required
