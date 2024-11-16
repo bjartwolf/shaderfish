@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Ray marching</title>
-    <style>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ray marching</title>
+  <style>
     #c {
-        height: 850px;
-        aspect-ratio: 1/1;
- //       position: absolute;
-        background-color: lightgreen;
+      height: 850px;
+      aspect-ratio: 1/1;
+      //       position: absolute;
+      background-color: lightgreen;
     }
+
     .view-container {
-//      position: absolute;
-      top: 350px; 
-      left: 200px; 
+      //      position: absolute;
+      top: 350px;
+      left: 200px;
       width: 300px;
     }
-       
-    </style>
-  </head>
-  <body>
+  </style>
+</head>
+
+<body>
   <script id="fragment_shader" src="/cat_demo.glsl" type="x-shader/x-fragment"></script>
-  <img id="texture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAQCAYAAADeWHeIAAAAAXNSR0IArs4c6QAAAYFJREFUaIHtWNGOhCAMnBp/ED/UfiL3cOhiLVBk1culk5iN0JlplUhZ4IOYrhFE6Dqarhbj/g/7T9tNCAEhhGqwYWzTOMQpunLM/V/yn2S0ZmQoIB9rFdK7yt3/Rv85J1qSsQZKVDzc/0X/eVQgoaeIS3D/e/wtW8DXwMyH36fh/mf/rgVgLSDNkxwXe1Q33P/7/ocFUCLWBKzmFrj/8/4zAGLm/RjCzKNnUUA0K5UVS2n+3/onzdf8k37Rn2BoIBoFXGpAspXq/i/6m04BmsGTjYz73+f/6CnA8fegfgHWdT01EcuydO1NHRp7D9LiExFCCKY8Rmp4i8vMFOM59MZnjwm/LyBPAkQU5SVj8Ok0iZnRqyFAck7jA9g1sr87R/1H62/mLX0rz+HE3fi1T/7F/AGUtwBSrhq2brapUSgkFrrlE78SN1rDMDfLS+WKF0mSm30F1boVjVjIzZx/PhGVMYlSTD5+JUabu6qh8SS/pV1Cq7YSv7d2i771mWkae9wPzWP1ALXTe/8AAAAASUVORK5CYII=" />
+  <img id="texture"
+    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAAAVCAMAAAAn8RGpAAAAAXNSR0IArs4c6QAAAA9QTFRFAAAAAAAAOjo6UVFRbW1t/kAd+gAAAAV0Uk5TAP////8c0CZSAAABH0lEQVRIieWXAQ7DIAhFRbn/mVdBLHRaMavZzMhi5/vsi7HVNYQcAKEZ23DEprIPT01hI56qAmfr4j2fp7ijHiMAXaUd8+kJT3JfPUZIEIB6Tl6NFnFnPVoAEvw8LOb39fDCiAAxlQAXNwMs4I56yg/wFA4f+ni5GWABH9TDS4PlhGAjZCMnrwMs4oN6+B6qe0FWEPN6+rgyWsId9RwdmuA1nFwNsIQ76uGHI1KUS4xOHjs+T3FHPSLYOHeDAX8b4GE+rufDCXyf/1xBfzgBQFQacsA2nI7xa0CHy5+/qfyef89nlvN7jo56XFshgkwgfzfpEW7yu/5tH8pW+2rp9sfNN5F51ZQunR2gcOny4afTg/Bm/o1/ywdqU7E0zfwXvmIbea4eByYAAAAASUVORK5CYII=" />
   <div>
     <div class="view-container">
       <h1> Demo in progress </h1>
-        The sound is stolen shamelessly and without asking from https://github.com/mollerse/popcorn-and-clocks-presentation
-        but then again, the cat is taken from https://sokoboko.garoof.no/ so I guess... 
+      The sound is stolen shamelessly and without asking from
+      https://github.com/mollerse/popcorn-and-clocks-presentation
+      but then again, the cat is taken from https://sokoboko.garoof.no/ so I guess...
 
-        PRESS ANY KEY TO PLAY because there is something with audio contexts having to play on user input.
+      PRESS ANY KEY TO PLAY because there is something with audio contexts having to play on user input.
 
-        Yeah, and nothing much happens, I am just trying to wire pieces up and figure out how 
-        to build this thing.
+      Yeah, and nothing much happens, I am just trying to wire pieces up and figure out how
+      to build this thing.
     </div>
     <canvas id="c"></canvas>
   </div>
-  </body>
+</body>
 <script type="module" src="/cat_demo.js"></script>
 
 </html>

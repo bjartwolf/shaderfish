@@ -2,11 +2,11 @@ const boardState = new Int32Array(64);
 
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
-  const canvas = document.querySelector('#c');
-  const gl = canvas.getContext('webgl2', { antialias: true }, "true");
+  const canvas = document.querySelector("#c");
+  const gl = canvas.getContext("webgl2", { antialias: true }, "true");
 
   if (!gl) {
-    console.error('WebGL not supported');
+    console.error("WebGL not supported");
     return;
   }
 
@@ -35,12 +35,21 @@ void main() {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageTextureElement);
-      const textureUniformLocation = gl.getUniformLocation(program, "u_texture");
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        imageTextureElement,
+      );
+      const textureUniformLocation = gl.getUniformLocation(
+        program,
+        "u_texture",
+      );
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.uniform1i(textureUniformLocation, 0);  // Tell WebGL to use texture unit 0 for uNoise
-
+      gl.uniform1i(textureUniformLocation, 0); // Tell WebGL to use texture unit 0 for uNoise
     } else {
       console.log("No image texture found, most shaders here do not use them");
       return "";
@@ -60,7 +69,7 @@ void main() {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error('Error compiling shader:', gl.getShaderInfoLog(shader));
+      console.error("Error compiling shader:", gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
       return null;
     }
@@ -70,7 +79,11 @@ void main() {
   async function createProgram(gl) {
     const fragmentShaderSource = await loadShader();
 
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const fragmentShader = createShader(
+      gl,
+      gl.FRAGMENT_SHADER,
+      fragmentShaderSource,
+    );
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
 
     const program = gl.createProgram();
@@ -79,9 +92,8 @@ void main() {
     gl.linkProgram(program);
     gl.useProgram(program);
 
-
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('Error linking program:', gl.getProgramInfoLog(program));
+      console.error("Error linking program:", gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
       return null;
     }
@@ -91,19 +103,25 @@ void main() {
 
   const program = await createProgram(gl);
 
-  const positionLocation = gl.getAttribLocation(program, 'position');
-  const resolutionLocation = gl.getUniformLocation(program, 'iResolution');
-  const timeLocation = gl.getUniformLocation(program, 'iTime');
+  const positionLocation = gl.getAttribLocation(program, "position");
+  const resolutionLocation = gl.getUniformLocation(program, "iResolution");
+  const timeLocation = gl.getUniformLocation(program, "iTime");
 
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   const positions = [
-    -1, -1,
-    1, -1,
-    -1, 1,
-    -1, 1,
-    1, -1,
-    1, 1,
+    -1,
+    -1,
+    1,
+    -1,
+    -1,
+    1,
+    -1,
+    1,
+    1,
+    -1,
+    1,
+    1,
   ];
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
@@ -134,17 +152,12 @@ void main() {
     gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
     gl.uniform1f(timeLocation, time);
 
-    const gameStateLocation = gl.getUniformLocation(program, 'boardstate');
+    const gameStateLocation = gl.getUniformLocation(program, "boardstate");
     let animationFrame = time * 4 % 8;
-    if ((time > 1.5 && time < 1.75) || (time > 3.5 && time < 3.75) || (time > 7.5)) {
-      animationFrame = previousAnimationFrame;
-    } else {
-      catPos += 1;
-    }
+    catPos += 1;
     gl.uniform1iv(gameStateLocation, boardState);
     boardState[0] = parseInt(animationFrame);
     boardState[1] = parseInt(catPos);
-
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -272,15 +285,51 @@ let t0 = 0;
 const PULSE = 0.25; // s
 
 const POPCORN = [
-  0, -2, 0, -5, -9, -5, -12, null, // 0-7
-  0, -2, 0, -5, -9, -5, -12, null, // 8-15
-  0, 2, 3, 2, 3, 3, 0, 2, 0, 2, 2, -2, 0, -2, 0, 0, -4, 0 // 16 - 33
+  0,
+  -2,
+  0,
+  -5,
+  -9,
+  -5,
+  -12,
+  null, // 0-7
+  0,
+  -2,
+  0,
+  -5,
+  -9,
+  -5,
+  -12,
+  null, // 8-15
+  0,
+  2,
+  3,
+  2,
+  3,
+  3,
+  0,
+  2,
+  0,
+  2,
+  2,
+  -2,
+  0,
+  -2,
+  0,
+  0,
+  -4,
+  0, // 16 - 33
 ];
 
 const HALF_NOTES = [
   4,
   12,
-  19, 22, 24, 27, 29, 32
+  19,
+  22,
+  24,
+  27,
+  29,
+  32,
 ];
 
 const ROOT = 83;
@@ -332,7 +381,7 @@ function loop(time) {
 }
 
 //document.addEventListener('keydown', function (event) {
-document.addEventListener('DOMContentLoaded', function (event) {
+document.addEventListener("DOMContentLoaded", function (event) {
   actx = new AudioContext();
   synth = new Synth(actx);
   actx.resume();
