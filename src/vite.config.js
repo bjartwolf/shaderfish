@@ -19,6 +19,7 @@ export default {
         task6: resolve(__dirname, 'task6/index.html'),
         sokoban: resolve(__dirname, 'sokoban/index.html'),
         cat_demo: resolve(__dirname, 'cat_demo/index.html'),
+        day1: resolve(__dirname, 'day1/index.html'),
       }
     }
   }
