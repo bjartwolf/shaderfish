@@ -379,14 +379,28 @@ function loop(time) {
     synth.play(note, t0 + on, dur);
   }
 }
+document.addEventListener("DOMContentLoaded", function (event) {
+  const restartButton = document.getElementById("restart");
+  console.log(restartButton);
+  restartButton.onclick = function () {
+    actx = new AudioContext();
+    synth = new Synth(actx);
+    actx.resume();
+    t0 = actx.currentTime;
+    QUEUE = [...SONG];
+    loop();
+    main();
+  };
+});
 
 //document.addEventListener('keydown', function (event) {
-document.addEventListener("DOMContentLoaded", function (event) {
-  actx = new AudioContext();
-  synth = new Synth(actx);
-  actx.resume();
-  t0 = actx.currentTime;
-  QUEUE = [...SONG];
-  loop();
-  main();
-}, { once: true });
+
+// document.addEventListener("DOMContentLoaded", function (event) {
+//  actx = new AudioContext();
+//  synth = new Synth(actx);
+//  actx.resume();
+//  t0 = actx.currentTime;
+//  QUEUE = [...SONG];
+//  loop();
+//  main();
+//}, { once: true });
