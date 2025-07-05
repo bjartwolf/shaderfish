@@ -168,7 +168,7 @@ void main() {
 }
 
 function frequencyFromNoteNumber(note) {
-  return 0.5 * 440 * Math.pow(2, (note - 69) / 12);
+  return 440 * Math.pow(2, (note - 69) / 12);
 }
 
 export default class Synth {
@@ -332,7 +332,7 @@ const HALF_NOTES = [
   32,
 ];
 
-const ROOT = 83;
+const ROOT = 67;
 const SONG = POPCORN.reduce(function (acc, n, i) {
   let durationSoFar = acc[i - 1]?.on || 0;
   let previousNoteDuration = acc[i - 1]?.dur || 0;
