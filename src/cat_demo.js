@@ -220,9 +220,12 @@ export default class Synth {
     return c;
   }
 
+  // https://inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
+  // https://www.sophiesauveterre.com/popcorn-gershon-kingsley-easy-piano-arrangement/
   play(note, at, dur) {
     if (!note) return;
     let freq = frequencyFromNoteNumber(note);
+    console.log(freq)
 
     let A = this.A * dur;
     let D = this.D * dur;
@@ -250,7 +253,7 @@ export default class Synth {
     let A = this.A;
     let D = this.D;
 
-    let v = this.osc("square", freq, 0);
+    let v = this.osc("saw", freq, 0);
     let a = this.amp();
 
     a.gain.setValueAtTime(1, now);
@@ -285,10 +288,10 @@ let t0 = 0;
 const PULSE = 0.25; // s
 
 const POPCORN = [
-  0,
-  -2,
-  0,
-  -5,
+  0, // A
+  -2,// G
+  0, //A
+  -5,//E
   -9,
   -5,
   -12,
@@ -321,27 +324,15 @@ const POPCORN = [
   0, // 16 - 33
 ];
 
-const HALF_NOTES = [
-  4,
-  12,
-  19,
-  22,
-  24,
-  27,
-  29,
-  32,
-];
-
-const ROOT = 67;
+const ROOT = 69; //A
 const SONG = POPCORN.reduce(function (acc, n, i) {
   let durationSoFar = acc[i - 1]?.on || 0;
   let previousNoteDuration = acc[i - 1]?.dur || 0;
-  let isThisNoteAHalfNote = HALF_NOTES.indexOf(i) > -1;
 
   let note = {
     note: n == null ? n : n + ROOT,
     on: durationSoFar + previousNoteDuration,
-    dur: (isThisNoteAHalfNote ? 0.5 : 1) * PULSE,
+    dur: 1 * PULSE,
   };
   acc.push(note);
 
@@ -391,6 +382,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     loop();
     main();
   };
+  restartButton.click();
 });
 
 //document.addEventListener('keydown', function (event) {
