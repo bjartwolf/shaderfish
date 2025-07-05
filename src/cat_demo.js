@@ -330,6 +330,46 @@ const POPCORN = [
   null
 ];
 
+BASS = [
+  null,
+  null,
+  0,// A
+  null,
+  4, //E
+  null,
+  0,
+  null,
+  4,
+  null,
+  0,
+  null,
+  4,
+  null,
+  0,
+  null,
+  4,
+  null,
+  0,
+  null,
+  4,
+  null,
+  0,
+  null,
+  4,
+  null,
+  -2,
+  null,
+  2,
+  null,
+  -2,
+  null,
+  2,
+  null,
+  -2,
+  null,
+  2,
+  null
+]
 const ROOT = 69; //A
 const SONG = POPCORN.reduce(function (acc, n, i) {
   let durationSoFar = acc[i - 1]?.on || 0;
