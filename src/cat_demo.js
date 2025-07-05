@@ -330,7 +330,7 @@ const POPCORN = [
   null
 ];
 
-BASS = [
+const BASS_NOTES = [
   null,
   null,
   0,// A
@@ -370,8 +370,22 @@ BASS = [
   2,
   null
 ]
-const ROOT = 69; //A
 const SONG = POPCORN.reduce(function (acc, n, i) {
+  const ROOT = 69; //A
+  let durationSoFar = acc[i - 1]?.on || 0;
+  let previousNoteDuration = acc[i - 1]?.dur || 0;
+
+  let note = {
+    note: n == null ? n : n + ROOT,
+    on: durationSoFar + previousNoteDuration,
+    dur: 1 * PULSE,
+  };
+  acc.push(note);
+
+  return acc;
+}, []);
+const BASS = BASS_NOTES.reduce(function (acc, n, i) {
+  const ROOT = 41; //A
   let durationSoFar = acc[i - 1]?.on || 0;
   let previousNoteDuration = acc[i - 1]?.dur || 0;
 
@@ -389,14 +403,11 @@ let rAF;
 const LOOKAHEAD = 0.75;
 
 let QUEUE = [...SONG];
-
+let QUEUE_BASS = [...BASS];
 function loop(time) {
   let lastNote = SONG[SONG.length - 2];
   let tMax = lastNote.on + lastNote.dur;
 
-  //  let deltaT = time - t0;
-  // console.log("t0", t0)
-  // console.log("thistime", time * 0.001 - t0);
 
   let deltaT = actx.currentTime - t0;
   //  console.log("deltat", deltaT);
@@ -409,26 +420,36 @@ function loop(time) {
   let scheduleThreshold = deltaT + LOOKAHEAD;
   while (QUEUE.length && QUEUE[0].on < scheduleThreshold) {
     let { note, on, dur } = QUEUE[0];
+    console.log("note", note)
     QUEUE.splice(0, 1);
 
-    if (note == null) continue;
+    if (note != null) {
+      synth.play(note, t0 + on, dur);
+    }
 
-    synth.play(note, t0 + on, dur);
+  }
+  while (QUEUE_BASS.length && QUEUE_BASS[0].on < scheduleThreshold) {
+    let { note, on, dur } = QUEUE_BASS[0];
+    QUEUE_BASS.splice(0, 1);
+
+    if (note != null) {
+      synth.play(note, t0 + on, dur);
+    }
   }
 }
 document.addEventListener("DOMContentLoaded", function (event) {
   const restartButton = document.getElementById("restart");
-  console.log(restartButton);
   restartButton.onclick = function () {
     actx = new AudioContext();
     synth = new Synth(actx);
     actx.resume();
     t0 = actx.currentTime;
     QUEUE = [...SONG];
+    QUEUE_BASS = [...BASS];
     loop();
     main();
   };
-  restartButton.click();
+  //  restartButton.click();
 });
 
 //document.addEventListener('keydown', function (event) {
