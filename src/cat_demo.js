@@ -333,42 +333,50 @@ const POPCORN = [
 const BASS_NOTES = [
   null,
   null,
-  0,// A
+  -1,// E, 40, -1
   null,
-  4, //E
+  -8, //A, 33, -8
   null,
-  0,
+  -1,// E, 40, -1
   null,
-  4,
+  -8, //A, 33, -8
   null,
-  0,
+  -1,// E, 40, -1
   null,
-  4,
+  -8, //A, 33, -8
   null,
-  0,
+  -1,// E, 40, -1
   null,
-  4,
+  -8, //A, 33, -8
   null,
-  0,
+  -1,// E, 40, -1
   null,
-  4,
+  -8, //A, 33, -8
   null,
-  0,
+  -3,// D, 38
   null,
-  4,
+  -10,// G, 31
   null,
-  -2,
-  null,
-  2,
-  null,
-  -2,
-  null,
-  2,
-  null,
-  -2,
-  null,
-  2,
+  -5, // C, 36
   null
+  - 12, // F, 29
+  null,
+  -5, // C, 36
+  null
+  - 12, // F, 29
+  null,
+  -1,// E, 40, -1
+  null,
+  -8, //A, 33, -8
+  null,
+  -1,// E, 40, -1
+  null,
+  -8, //A, 33, -8
+  null,
+  -1,// E, 40, -1
+  null,
+  -8, //A, 33, -8
+  null,
 ]
 const SONG = POPCORN.reduce(function (acc, n, i) {
   const ROOT = 69; //A
@@ -385,7 +393,7 @@ const SONG = POPCORN.reduce(function (acc, n, i) {
   return acc;
 }, []);
 const BASS = BASS_NOTES.reduce(function (acc, n, i) {
-  const ROOT = 41; //A
+  const ROOT = 41; //F
   let durationSoFar = acc[i - 1]?.on || 0;
   let previousNoteDuration = acc[i - 1]?.dur || 0;
 
@@ -437,6 +445,7 @@ function loop(time) {
     }
   }
 }
+
 document.addEventListener("DOMContentLoaded", function (event) {
   const restartButton = document.getElementById("restart");
   restartButton.onclick = function () {
