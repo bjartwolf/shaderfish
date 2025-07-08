@@ -1,4 +1,5 @@
 import { frequencyFromNoteNumberEqualTemperament } from "./music_theory";
+import { BASS_NOTES, POPCORN } from "./popcorn";
 
 const boardState = new Int32Array(64);
 
@@ -253,97 +254,6 @@ let t0 = 0;
 
 const PULSE = 0.25; // s
 
-const POPCORN = [
-  9, // A
-  7,// G
-  9, //A
-  4,//E
-  0,
-  4,
-  -3,
-  null, // 0-7
-  9,
-  7,
-  9,
-  4,
-  0,
-  4,
-  -3,
-  null, // 8-15
-  9,
-  11,
-  12,
-  11,
-  12,
-  9,
-  11,
-  9,
-  11,
-  7,
-  9,
-  7,
-  9,
-  5,
-  9, // 25 - 33
-  null, // 34
-  9,
-  7,
-  9,
-  4,
-  0,
-  4,
-  -3,
-  null
-];
-
-const BASS_NOTES = [
-  null,
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -3,// D, 38
-  null,
-  -10,// G, 31
-  null,
-  -5, // C, 36
-  null
-  - 12, // F, 29
-  null,
-  -5, // C, 36
-  null
-  - 12, // F, 29
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-  -1,// E, 40, -1
-  null,
-  -8, //A, 33, -8
-  null,
-]
 const SONG = POPCORN.reduce(function (acc, n, i) {
   const ROOT = 60; //A
   let durationSoFar = acc[i - 1]?.on || 0;
@@ -412,7 +322,7 @@ function loop(time) {
     console.log("pop from bass queue for scheudling", note, on, dur)
     if (note != null) {
       synth_bass.play(note, t0 + on, dur * 2.0, 3.0, "sawtooth");
-      //      synth.play(note + 7, t0 + on + 0.04, dur, 0.3);
+      synth_bass.play(note + 7, t0 + on + 0.04, dur * 4.0, 0.3, "sawtooth");
     }
   }
 }
