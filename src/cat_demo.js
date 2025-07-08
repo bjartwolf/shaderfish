@@ -1,3 +1,5 @@
+import { frequencyFromNoteNumberEqualTemperament } from "./music_theory";
+
 const boardState = new Int32Array(64);
 
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
@@ -167,10 +169,6 @@ void main() {
   requestAnimationFrame(render);
 }
 
-function frequencyFromNoteNumber(note) {
-  return 440 * Math.pow(2, (note - 69) / 12);
-}
-
 export default class Synth {
   constructor(actx) {
     this.actx = actx;
@@ -224,7 +222,7 @@ export default class Synth {
   // https://www.sophiesauveterre.com/popcorn-gershon-kingsley-easy-piano-arrangement/
   play(note, at, dur) {
     if (!note) return;
-    let freq = frequencyFromNoteNumber(note);
+    let freq = frequencyFromNoteNumberEqualTemperament(note);
     console.log(freq)
 
     let A = this.A * dur;
@@ -247,7 +245,7 @@ export default class Synth {
 
   noteOn(note) {
     if (!note) return;
-    let freq = frequencyFromNoteNumber(note);
+    let freq = frequencyFromNoteNumberEqualTemperament(note);
     let now = this.actx.currentTime;
 
     let A = this.A;
