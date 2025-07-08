@@ -251,45 +251,45 @@ let t0 = 0;
 const PULSE = 0.25; // s
 
 const POPCORN = [
-  0, // A
-  -2,// G
-  0, //A
-  -5,//E
-  -9,
-  -5,
-  -12,
+  9, // A
+  7,// G
+  9, //A
+  4,//E
+  0,
+  4,
+  -3,
   null, // 0-7
+  9,
+  7,
+  9,
+  4,
   0,
-  -2,
-  0,
-  -5,
-  -9,
-  -5,
-  -12,
+  4,
+  -3,
   null, // 8-15
-  0,
-  2,
-  3,
-  2,
-  3,
-  0,
-  2,
-  0,
-  2,
-  -2,
-  0,
-  -2,
-  0,
-  -4,
-  0, // 16 - 33
+  9,
+  11,
+  12,
+  11,
+  12,
+  9,
+  11,
+  9,
+  11,
+  7,
+  9,
+  7,
+  9,
+  5,
+  9, // 25 - 33
   null, // 34
+  9,
+  7,
+  9,
+  4,
   0,
-  -2,
-  0,
-  -5,
-  -9,
-  -5,
-  -12,
+  4,
+  -3,
   null
 ];
 
@@ -342,7 +342,7 @@ const BASS_NOTES = [
   null,
 ]
 const SONG = POPCORN.reduce(function (acc, n, i) {
-  const ROOT = 69; //A
+  const ROOT = 60; //A
   let durationSoFar = acc[i - 1]?.on || 0;
   let previousNoteDuration = acc[i - 1]?.dur || 0;
 
