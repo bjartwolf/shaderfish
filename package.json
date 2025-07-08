@@ -21,6 +21,9 @@
   "bugs": {
     "url": "https://github.com/bjartwolf/shaderfish/issues"
   },
+  "engines": {
+    "node": ">=22.17.0"
+  },
   "homepage": "https://github.com/bjartwolf/shaderfish#readme",
   "devDependencies": {
     "vite": "^7.0.2",
