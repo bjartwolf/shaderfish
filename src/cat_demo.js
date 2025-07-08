@@ -220,7 +220,7 @@ export default class Synth {
 
   // https://inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
   // https://www.sophiesauveterre.com/popcorn-gershon-kingsley-easy-piano-arrangement/
-  play(note, at, dur) {
+  play(note, at, dur, gain = 1.0, wave = "sawtooth") {
     if (!note) return;
     let freq = frequencyFromNoteNumberEqualTemperament(note);
     console.log(freq)
@@ -229,23 +229,26 @@ export default class Synth {
     let D = this.D * dur;
     let R = this.R * dur;
 
-    let v = this.osc("sawtooth", freq, 0);
+    //let v = this.osc("sawtooth", freq, 0);
+    let v = this.osc(wave, freq, 0);
     let a = this.amp();
 
-    a.gain.setValueAtTime(1, at);
+    a.gain.setValueAtTime(0.0, at);
     a.connect(this.out);
     v.connect(a);
 
-    a.gain.linearRampToValueAtTime(1.0, at + A);
-    a.gain.linearRampToValueAtTime(this.S, at + A + D);
-    a.gain.linearRampToValueAtTime(this.S, at + A + D);
-    a.gain.linearRampToValueAtTime(0.0001, at + A + D + R);
+    //    a.gain.linearRampToValueAtTime(gain * 1.0, at + A);
+    a.gain.linearRampToValueAtTime(gain, at + A);
+    //a.gain.linearRampToValueAtTime(this.S, at + A + D);
+    //a.gain.linearRampToValueAtTime(0.0, at + A + D);
+    a.gain.linearRampToValueAtTime(0.0000, at + A + D + R);
     v.stop(at + A + D + R);
   }
 }
 
 let actx;
-let synth;
+let synth_melody;
+let synth_bass;
 let t0 = 0;
 
 const PULSE = 0.25; // s
@@ -351,10 +354,11 @@ const SONG = POPCORN.reduce(function (acc, n, i) {
     on: durationSoFar + previousNoteDuration,
     dur: 1 * PULSE,
   };
-  acc.push(note);
 
+  acc.push(note);
   return acc;
 }, []);
+
 const BASS = BASS_NOTES.reduce(function (acc, n, i) {
   const ROOT = 41; //F
   let durationSoFar = acc[i - 1]?.on || 0;
@@ -374,11 +378,11 @@ let rAF;
 const LOOKAHEAD = 0.75;
 
 let QUEUE = [...SONG];
+console.log(QUEUE)
 let QUEUE_BASS = [...BASS];
 function loop(time) {
   let lastNote = SONG[SONG.length - 2];
   let tMax = lastNote.on + lastNote.dur;
-
 
   let deltaT = actx.currentTime - t0;
   //  console.log("deltat", deltaT);
@@ -391,11 +395,13 @@ function loop(time) {
   let scheduleThreshold = deltaT + LOOKAHEAD;
   while (QUEUE.length && QUEUE[0].on < scheduleThreshold) {
     let { note, on, dur } = QUEUE[0];
-    console.log("note", note)
+    console.log("pop from queue for scheudling", note, on, dur)
     QUEUE.splice(0, 1);
 
     if (note != null) {
-      synth.play(note, t0 + on, dur);
+      synth_melody.play(note, t0 + on, dur, 1.0, "sawtooth");
+      synth_melody.play(note + 4, t0 + on + 0.02, dur, 0.2, "sine");
+      synth_melody.play(note + 7, t0 + on + 0.04, dur, 0.3, "sine");
     }
 
   }
@@ -403,8 +409,10 @@ function loop(time) {
     let { note, on, dur } = QUEUE_BASS[0];
     QUEUE_BASS.splice(0, 1);
 
+    console.log("pop from bass queue for scheudling", note, on, dur)
     if (note != null) {
-      synth.play(note, t0 + on, dur);
+      synth_bass.play(note, t0 + on, dur * 2.0, 3.0, "sawtooth");
+      //      synth.play(note + 7, t0 + on + 0.04, dur, 0.3);
     }
   }
 }
@@ -413,7 +421,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
   const restartButton = document.getElementById("restart");
   restartButton.onclick = function () {
     actx = new AudioContext();
-    synth = new Synth(actx);
+    synth_melody = new Synth(actx);
+    synth_melody.envelope(0.01, 0.2, 0.0, 0.01); // A, D, S, R 
+    synth_bass = new Synth(actx);
+    synth_bass.envelope(0.01, 0.2, 0.2, 0.01); // A, D, S, R 
     actx.resume();
     t0 = actx.currentTime;
     QUEUE = [...SONG];
