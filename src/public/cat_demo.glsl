@@ -16,7 +16,7 @@ const float pixelsPrFrame = 16.0;
 float pixelsX = frameCount * pixelsPrFrame; 
 
 float sdSphere(vec3 p, float radius) {
-  return length(p-1.5-sin(iTime))*2.0+0.4*sin(iTime) - radius;
+  return length(p-1.5-sin(iTime)*1.0+vec3(sin(iTime),0.0,0.0)) - radius;
 }
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
