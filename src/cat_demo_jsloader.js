@@ -12,17 +12,29 @@ async function main() {
     aspect-ratio: 1/1;
     background-color: lightgreen;
   }
-
-  .view-container {
-    top: 350px;
-    left: 200px;
-    width: 300px;
-  }
 `;
   document.head.appendChild(style);
   const canvas = document.createElement('canvas');
   canvas.id = 'c';
   document.body.appendChild(canvas);
+  const button = document.createElement('button');
+  button.textContent = 'When not running with autoplay enabled this must be clicked';
+  button.onclick = function () {
+    actx = new AudioContext();
+    console.log(actx);
+    synth_melody = new Synth(actx);
+    synth_melody.envelope(0.01, 0.2, 0.0, 0.01); // A, D, S, R 
+    synth_bass = new Synth(actx);
+    synth_bass.envelope(0.01, 0.2, 0.2, 0.01); // A, D, S, R 
+    actx.resume();
+    t0 = actx.currentTime;
+    QUEUE = [...SONG];
+    QUEUE_BASS = [...BASS];
+    requestAnimationFrame(render);
+    loop();
+  };
+
+  document.body.appendChild(button);
 
   const gl = canvas.getContext("webgl2", { antialias: true }, "true");
 
@@ -192,7 +204,6 @@ void main() {
     requestAnimationFrame(render);
   }
 
-  requestAnimationFrame(render);
 }
 
 let actx;
@@ -274,33 +285,6 @@ function loop(time) {
     }
   }
 }
-
 document.addEventListener("DOMContentLoaded", function (event) {
-  const restartButton = document.getElementById("restart");
-  restartButton.onclick = function () {
-    actx = new AudioContext();
-    synth_melody = new Synth(actx);
-    synth_melody.envelope(0.01, 0.2, 0.0, 0.01); // A, D, S, R 
-    synth_bass = new Synth(actx);
-    synth_bass.envelope(0.01, 0.2, 0.2, 0.01); // A, D, S, R 
-    actx.resume();
-    t0 = actx.currentTime;
-    QUEUE = [...SONG];
-    QUEUE_BASS = [...BASS];
-    loop();
-    main();
-  };
-  //  restartButton.click();
+  main()
 });
-
-//document.addEventListener('keydown', function (event) {
-
-// document.addEventListener("DOMContentLoaded", function (event) {
-//  actx = new AudioContext();
-//  synth = new Synth(actx);
-//  actx.resume();
-//  t0 = actx.currentTime;
-//  QUEUE = [...SONG];
-//  loop();
-//  main();
-//}, { once: true });
