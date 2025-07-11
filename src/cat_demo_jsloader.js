@@ -3,7 +3,6 @@ import { Synth } from "./synth";
 import cat_shader from './cat_demo.frag'
 const boardState = new Int32Array(64);
 
-
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
   const style = document.createElement('style');
@@ -195,7 +194,6 @@ void main() {
 
     requestAnimationFrame(render);
   }
-
 }
 
 let actx;
@@ -277,6 +275,4 @@ function loop(time) {
     }
   }
 }
-document.addEventListener("DOMContentLoaded", function (event) {
-  main()
-});
+main()

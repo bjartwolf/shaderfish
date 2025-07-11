@@ -9,6 +9,9 @@ export default {
   assetsInclude: ['**/*.png', '**/*.glb', '**/*.glsl'],
   build: {
     target: 'esnext',
+    modulePreload: {
+      polyfill: false
+    },
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
