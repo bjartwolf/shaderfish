@@ -2,9 +2,28 @@ import { BASS_NOTES, POPCORN } from "./popcorn";
 import { Synth } from "./synth";
 const boardState = new Int32Array(64);
 
+
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
-  const canvas = document.querySelector("#c");
+  const style = document.createElement('style');
+  style.textContent = `
+  #c {
+    height: 450px;
+    aspect-ratio: 1/1;
+    background-color: lightgreen;
+  }
+
+  .view-container {
+    top: 350px;
+    left: 200px;
+    width: 300px;
+  }
+`;
+  document.head.appendChild(style);
+  const canvas = document.createElement('canvas');
+  canvas.id = 'c';
+  document.body.appendChild(canvas);
+
   const gl = canvas.getContext("webgl2", { antialias: true }, "true");
 
   if (!gl) {
