@@ -1,9 +1,10 @@
 import FullReload from 'vite-plugin-full-reload'
+import glsl from 'vite-plugin-glsl';
 import { resolve } from 'path'
 /** @type {import('vite').UserConfig} */
 export default {
   plugins: [
-    FullReload(['**/*']),
+    FullReload(['**/*']), glsl()
   ],
   assetsInclude: ['**/*.png', '**/*.glb', '**/*.glsl'],
   build: {

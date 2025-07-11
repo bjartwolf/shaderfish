@@ -28,6 +28,7 @@
   "devDependencies": {
     "vite": "^7.0.2",
     "vite-plugin-full-reload": "^1.2.0",
+    "vite-plugin-glsl": "^1.5.1",
     "vitest": "^3.2.4"
   }
 }
