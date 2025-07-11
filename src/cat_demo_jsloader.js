@@ -1,5 +1,6 @@
 import { BASS_NOTES, POPCORN } from "./popcorn";
 import { Synth } from "./synth";
+import cat_shader from './cat_demo.frag'
 const boardState = new Int32Array(64);
 
 
@@ -21,7 +22,6 @@ async function main() {
   button.textContent = 'When not running with autoplay enabled this must be clicked';
   button.onclick = function () {
     actx = new AudioContext();
-    console.log(actx);
     synth_melody = new Synth(actx);
     synth_melody.envelope(0.01, 0.2, 0.0, 0.01); // A, D, S, R 
     synth_bass = new Synth(actx);
@@ -64,7 +64,6 @@ void main() {
     img.onload = () => {
       const imageTextureElement = document.getElementById("texture");
       if (imageTextureElement) {
-        console.log("found image", imageTextureElement.src);
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -96,13 +95,6 @@ void main() {
 
   }
 
-  // Fragment shader program
-  async function loadShader() {
-    const script = document.getElementById("fragment_shader");
-    const response = await fetch(script.src);
-    return await response.text();
-  }
-
   //  https://cdn.maximeheckel.com/noises/noise2.png
   function createShader(gl, type, source) {
     const shader = gl.createShader(type);
@@ -117,7 +109,7 @@ void main() {
   }
 
   async function createProgram(gl) {
-    const fragmentShaderSource = await loadShader();
+    const fragmentShaderSource = cat_shader;
 
     const fragmentShader = createShader(
       gl,
