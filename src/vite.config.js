@@ -4,7 +4,7 @@ import { resolve } from 'path'
 /** @type {import('vite').UserConfig} */
 export default {
   plugins: [
-    FullReload(['**/*']), glsl()
+    FullReload(['**/*']), glsl({minify: true}),
   ],
   assetsInclude: ['**/*.png', '**/*.glb', '**/*.glsl'],
   build: {
