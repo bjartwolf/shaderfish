@@ -22,7 +22,12 @@ async function main() {
   }`;
   document.head.appendChild(style);
   const button = document.createElement('button');
-  button.textContent = 'When not running with autoplay enabled this must be clicked';
+  button.textContent = 'PRESS FIRE TO PLAY';
+  button.style.font = 'font-family: "Courier New", Courier, monospace;'
+  button.style.top = '120px';
+  button.style.left = '120px';
+  button.style.backgroundColor = '#FFCC00';
+  button.style.position = 'absolute';
   button.onclick = function () {
     actx = new AudioContext();
     synth_melody = new Synth(actx);
@@ -38,8 +43,8 @@ async function main() {
     button.remove();
   };
 
-  document.body.appendChild(button);
   const gl = createCanvas();
+  document.body.appendChild(button);
   const program = await createProgram(gl, cat_shader);
 
   const positionLocation = gl.getAttribLocation(program, "position");
