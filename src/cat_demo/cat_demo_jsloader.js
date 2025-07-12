@@ -1,7 +1,7 @@
 import { BASS_NOTES, POPCORN } from "./popcorn";
-import { loadTexture } from "./textureloader";
 import { Synth } from "./synth";
-import cat_shader from './cat_demo.frag'
+import { createCanvas, createProgram } from "./shader_setup";
+import cat_shader from "./cat_demo.frag";
 const boardState = new Int32Array(64);
 
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
@@ -14,9 +14,6 @@ async function main() {
     background-color: lightgreen;
   }`;
   document.head.appendChild(style);
-  const canvas = document.createElement('canvas');
-  canvas.id = 'c';
-  document.body.appendChild(canvas);
   const button = document.createElement('button');
   button.textContent = 'When not running with autoplay enabled this must be clicked';
   button.onclick = function () {
@@ -34,66 +31,8 @@ async function main() {
   };
 
   document.body.appendChild(button);
-
-  const gl = canvas.getContext("webgl2", { antialias: true }, "true");
-
-  if (!gl) {
-    console.error("WebGL not supported");
-    return;
-  }
-
-  // Vertex shader program
-  const vertexShaderSource = `#version 300 es 
-precision highp float;
-
-in vec4 position;
-out vec2 vUv;
-
-void main() {
-    vUv = position.xy;
-    gl_Position = position; 
-  }
-  `;
-
-  //  https://cdn.maximeheckel.com/noises/noise2.png
-  function createShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error("Error compiling shader:", gl.getShaderInfoLog(shader));
-      gl.deleteShader(shader);
-      return null;
-    }
-    return shader;
-  }
-
-  async function createProgram(gl) {
-    const fragmentShaderSource = cat_shader;
-
-    const fragmentShader = createShader(
-      gl,
-      gl.FRAGMENT_SHADER,
-      fragmentShaderSource,
-    );
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    gl.useProgram(program);
-
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error("Error linking program:", gl.getProgramInfoLog(program));
-      gl.deleteProgram(program);
-      return null;
-    }
-    loadTexture(gl, program);
-    return program;
-  }
-
-  const program = await createProgram(gl);
+  const gl = createCanvas();
+  const program = await createProgram(gl, cat_shader);
 
   const positionLocation = gl.getAttribLocation(program, "position");
   const resolutionLocation = gl.getUniformLocation(program, "iResolution");
@@ -220,8 +159,8 @@ function loop(time) {
 
     if (note != null) {
       synth_melody.play(note, t0 + on, dur, 1.0, "sawtooth");
-      synth_melody.play(note + 4, t0 + on + 0.02, dur, 0.2, "sine");
-      synth_melody.play(note + 7, t0 + on + 0.04, dur, 0.3, "sine");
+      //      synth_melody.play(note + 4, t0 + on + 0.02, dur, 0.2, "sine"); //third major
+      //      synth_melody.play(note + 7, t0 + on + 0.04, dur, 0.3, "sine"); // perfect fifth
     }
 
   }
@@ -232,7 +171,7 @@ function loop(time) {
     console.log("pop from bass queue for scheudling", note, on, dur)
     if (note != null) {
       synth_bass.play(note, t0 + on, dur * 2.0, 3.0, "sawtooth");
-      synth_bass.play(note + 7, t0 + on + 0.04, dur * 4.0, 0.3, "sawtooth");
+      //     synth_bass.play(note + 7, t0 + on + 0.04, dur * 4.0, 0.3, "sawtooth");
     }
   }
 }

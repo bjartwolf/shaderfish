@@ -1,3 +1,4 @@
+// TODO extract id names
 export function loadTexture(gl, program) {
   const img = document.createElement('img');
   img.id = "texture";

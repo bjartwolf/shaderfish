@@ -17,7 +17,6 @@ float pixelsX = frameCount * pixelsPrFrame;
 
 void main() {
     vec3 ro = vec3(0.0, 0.0, 5.0);
-
     vec2 uv = vUv.xy;
     uv += 1.0; 
     uv *= 0.5; 
