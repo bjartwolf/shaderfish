@@ -3,15 +3,22 @@ import { Synth } from "./synth";
 import { createCanvas, createProgram } from "./shader_setup";
 import cat_shader from "./cat_demo.frag";
 const boardState = new Int32Array(64);
+const border = document.createElement('div');
+border.style.width = '403px'
+border.style.height = '284px'
+border.style.backgroundColor = '#6699FF';
+document.body.append(border);
 
 // https://registry.khronos.org/OpenGL-Refpages/es3.0/
 async function main() {
   const style = document.createElement('style');
   style.textContent = `
   #c {
-    height: 450px;
-    aspect-ratio: 1/1;
-    background-color: lightgreen;
+    height: 200px;
+    width: 320px;
+    position: absolute;
+    top: 51px;
+    left: 41px;
   }`;
   document.head.appendChild(style);
   const button = document.createElement('button');
@@ -28,6 +35,7 @@ async function main() {
     QUEUE_BASS = [...BASS];
     requestAnimationFrame(render);
     loop();
+    button.remove();
   };
 
   document.body.appendChild(button);

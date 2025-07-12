@@ -25,10 +25,10 @@ void main() {
     float xPos = float(boardstate[1]);
 
     float timeScaled = iTime / 10.0; 
-    float deltaX = mod(xPos/1500.0,1.1);
-    float deltaY = 0.0;// 0.05*sin(2.0*iTime);
+    float deltaX = mod(xPos/320.0*0.2,1.1);
+    float deltaY = 0.5;//0.3*sin(1.0*iTime*5.0);
     vec2 catX = vec2(-0.2+deltaX,0.0+deltaX);
-    vec2 catY = vec2(0.2+deltaY,0.3+deltaY);
+    vec2 catY = vec2(0.2+deltaY,0.4+deltaY);
     float scaleX = 1.0/(catX.y - catX.x);
     float scaleY = 1.0/(catY.y - catY.x);
   
@@ -39,11 +39,14 @@ void main() {
       catPos.y = (uv.y-catY.x)*scaleY;
       fragColor = textureLod(u_texture, catPos, 0.0);
       if (fragColor.a < 0.1) {
-        fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
+       // fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
+        fragColor = vec4(64.0/255.0,64.0/255.0,1.0,1.0); 
       }
+    } else if (uv.y > catY.y) {
+        fragColor = vec4(0.0/255.0,64.0/255.0,64.0/255.0,1.0); 
     } else {
-        fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
+        fragColor = vec4(64.0/255.0,64.0/255.0,1.0,1.0); 
+    }
+//      fragColor = vec4(raymarch(ro, ray_direction).rgb, 1.0);
    // fragColor = vec4(color);
-
-  }
 }

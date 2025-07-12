@@ -30,6 +30,7 @@ export function loadTexture(gl, program) {
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.uniform1i(textureUniformLocation, 0); // Tell WebGL to use texture unit 0 for uNoise
+      imageTextureElement.remove(); // Remove the image element after loading the texture.
     } else {
       console.log("No image texture found, most shaders here do not use them");
       return "";
